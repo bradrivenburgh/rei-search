@@ -1,0 +1,18 @@
+﻿Role,Task,Importance
+As a new user,I want to accept or reject geolocation permissions by clicking a button,Medium
+As a disabled user,I want to accept or reject geolocation permissions via keyboard,Medium
+As a returning user,I want the browser to remember my geolocation settings,Medium
+As a new user,I want to read about how to use the rei-search web app,High
+As a new user,I wan to see a high-level map of the United States when the web app loads,High
+As a new user,I want to see the closest MSA populated in the MSA input field if I accepted geolocation permissions.,Medium
+As a new user,I want to be able to enter a city or zipcode and have the closest MSA populated in the MSA input field.,High
+As a new user,"I want to be able to see all MSAs at once, organized by state, in a menu and be able to select one MSA from that menu",High
+As a new user,"I want to be able to select a state on the map and have the MSAs for that state marked, as well as see a side-panel with the MSAs listed",Low
+As a new user,I want to be able to click on a MSA in the state view or in the side panel and see the MSA close up MSA view and the statistics for that MSA,Low
+As a new user,I want to submit a MSA to view by selecting submit on the form,High
+As a new user,I want to view the MSA on the map,High
+As a new user,"I want to be able to zoom in and out of the MSA on the map, showing more or less details, respectively",Medium
+As a new user,I want to view cards with statistics about the MSA alongside the map of the MSA on larger screens,High
+As a disabled user,I want to be able to have a screen reader read the cards in the order presented,High
+As a new user,I want to view cards with statistics about the MSA below the map on smaller screens,High
+As a new user,I want to be able to clear my results and see another MSA by selecting a new MSA to research from the dropdown menu,High
