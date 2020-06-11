@@ -1,1 +1,23 @@
-/* CSS goes here */
+/* Map */
+
+#mapid { 
+    height: 260px; 
+}
+
+@media screen and (min-width: 768px) {
+    #mapid {
+        height: 520px;
+    }
+} 
+
+@media screen and (min-width: 1024px) {
+    #mapid {
+        height: 650px;
+    }
+} 
+
+@media screen and (min-width: 1440px) {
+    #mapid {
+        height: 780px;
+    }
+} 
