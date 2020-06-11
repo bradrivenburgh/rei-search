@@ -11,7 +11,7 @@ if (window.innerWidth < 768) {
     initZoom = 5;
 }
 
-
+//Main map layer
 let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
 L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -23,7 +23,27 @@ L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
 }).addTo(mymap);
 
-L.geoJson(statesData).addTo(mymap);
+
+//Add a marker
+let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
+
+//Add a circle -- this might be the best option
+let circle = L.circle([39.9931508, -75.0139605], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 60000
+}).addTo(mymap);
+
+
+//Add a bounding box
+// define rectangle geographical bounds
+var bounds = [[39.85, -75.29], [40.13, -74.95]];
+// create an orange rectangle
+L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(mymap);
+// zoom the map to the rectangle bounds
+mymap.fitBounds(bounds);
+
 
 // Adjust zoom level if window is resized
 window.onresize = function() {
@@ -35,6 +55,14 @@ window.onresize = function() {
         mymap.setZoom(5);
     }
 }
+
+
+/*
+//geoJson data that places state boundries
+L.geoJson(statesData).addTo(mymap);
+*/
+
+/*
 
 // Define color scheme of map based on pop density.  Probably won't use anything below this comment for map.
 
@@ -100,3 +128,4 @@ var geojson;
 		style: style,
 		onEachFeature: onEachFeature
 	}).addTo(mymap);
+*/
