@@ -1,3 +1,28 @@
+//Get user input
+
+//Get user coordinates
+
+//Get MSA GEOID
+
+//Get statistics
+
+    //Render geoJSON shape to map with citySDK
+
+    //Get, calculate, and store population growth/decline stats
+
+    //Get, calculate, and store job market growth/decline stats
+
+    //Get and store major industries info
+
+    //Get and store types of jobs
+
+    //Get and store median salary for area
+
+//Render statistics to map pop-up
+
+//Reset variables with new search
+
+
 /* ------Map------ */
 
 let initZoom;
@@ -31,27 +56,6 @@ L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 //Add a marker
 let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
 
-/*
-//Add a circle -- this might be the best option
-//if I can't get CitySDK to get geoJson files of
-//MSAs
-let circle = L.circle([39.9931508, -75.0139605], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 60000
-}).addTo(mymap);
-
-
-//Add a bounding box
-// define rectangle geographical bounds
-var bounds = [[39.85, -75.29], [40.13, -74.95]];
-// create an orange rectangle
-L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(mymap);
-// zoom the map to the rectangle bounds
-//mymap.fitBounds(bounds);
-*/
-
 // Adjust zoom level if window is resized
 window.onresize = function() {
     if (window.innerWidth < 768) {
@@ -63,9 +67,9 @@ window.onresize = function() {
     }
 }
 
-
 //Custom query with CitySDK for MSA; unable to get MSA
-//geoJSON shapes, only national.  Use for stats only
+//geoJSON shapes from acs 1-year data, only national.  
+//Use acs1 for stats only
 
 const geoShape = census(
     {
@@ -83,6 +87,8 @@ const geoShape = census(
 
 //Example query with CitySDK. I Can use this
 //to get individual geography geoJSON files!
+//Probably need to remove popup functionality
+//and add it separately.
 
 census(
     {
@@ -92,9 +98,6 @@ census(
       },
       geoResolution: '500k',
       sourcePath: ['cbp'],
-      predicates: {
- //       NAICS2012: 211 // NAICS code for Oil and Gas Extraction
-      },
       values: ['ESTAB'] // number of establishments
     },
     function(error, response) {
@@ -113,14 +116,39 @@ census(
   );
 
 
-/*
-//geoJson data that places state boundaries
-L.geoJson(statesData).addTo(mymap);
-*/
+//Run app
+//$(handleSearch);
 
+/* ----
 
-/*
 // PROBABLY WILL NOT USE ANYTHING BELOW THIS COMMENT
+
+
+//Add a circle -- this might be the best option
+//if I can't get CitySDK to get geoJson files of
+//MSAs
+let circle = L.circle([39.9931508, -75.0139605], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 60000
+}).addTo(mymap);
+
+
+//geoJson data that places state boundaries from us-states.js
+L.geoJson(statesData).addTo(mymap);
+
+
+
+//Add a bounding box
+// define rectangle geographical bounds
+var bounds = [[39.85, -75.29], [40.13, -74.95]];
+// create an orange rectangle
+L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(mymap);
+// zoom the map to the rectangle bounds
+//mymap.fitBounds(bounds);
+
+
 
 // CHOROPLETH MAP
 // Define color scheme of map based on pop density.

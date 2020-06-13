@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template: Starting Point</title>
+
+    <title>rei-search</title>
 
     <!--Style reset-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" type="text/css">
@@ -16,9 +17,6 @@
     <!-- Custom CSS -->
     <link href="index.css" rel="stylesheet" type="text/css">
 
-    <!--US States geometrical shapes for map-->
-    <script src="us-states.js"></script>
-
     <!--Leaflet JS for map-->
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
     integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
@@ -30,10 +28,37 @@
 </head>
 
 <body>
+    <header>
+        <h1>rei-search</h1>
+    </header>
 
-    <!--Map-->
-    <div id="mapid"></div>
-    
+    <main class="wrapper">
+        <section class="instructions">
+            <h2>How to use the rei-search app</h2>
+                <p>Real estate investment decisions should always begin with due diligence in order to stack the deck in your favor.  Even before you decide on the type of real estate you wish to invest in, you should know the details about <em>where</em> you will invest.</p>
+            
+            <h3>Metropolitan Statistical Areas</h3>
+                <p>This app focuses on discovering details about metropolitan statistical areas, which are geographic regions centered around areas of high population density (e.g., big cities) and integrated economies.  Statistics about the population and economy of MSAs in the geography you wish to invest are important to consider if you want to be successful as an investor.</p>
+                
+                <p>There are 392 (as of 2020) MSAs in the United states, and you can explore key statistical information about each of them with this app.</p>
+
+        </section>
+        <section class="form">
+            <form class="js-form">
+                <legend for="location">Enter your zipcode or city, state</legend>
+                <input type="text" name="location" id="js-location" placeholder="philadelphia, pa" required>
+            </form>
+        </section>
+
+        <section class="map">
+            <!--Map-->
+            <div id="mapid"></div>
+        </section>
+    </main>
+    <footer>
+        <p>copyright &copy;<span id="js-copyright"></span></p>
+    </footer>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="index.js"></script>
 </body>
