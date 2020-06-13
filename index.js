@@ -12,7 +12,11 @@ if (window.innerWidth < 768) {
 }
 
 //Main map layer
+
+//Initialize map
 let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
+
+//Set the base tile layer to OpenStreetMap
 L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
@@ -28,6 +32,8 @@ L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
 
 //Add a circle -- this might be the best option
+//if I can't get CitySDK to get geoJson files of
+//MSAs
 let circle = L.circle([39.9931508, -75.0139605], {
     color: 'red',
     fillColor: '#f03',
@@ -42,7 +48,7 @@ var bounds = [[39.85, -75.29], [40.13, -74.95]];
 // create an orange rectangle
 L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(mymap);
 // zoom the map to the rectangle bounds
-mymap.fitBounds(bounds);
+//mymap.fitBounds(bounds);
 
 
 // Adjust zoom level if window is resized
@@ -57,14 +63,66 @@ window.onresize = function() {
 }
 
 
+//Custom query with CitySDK for MSA
+census(
+    {
+        "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
+        "vintage" : 2018, // source (year, 2018)
+        "values" : ["NAME","B01003_001E"], // metric (column for total population)
+        "geoHierarchy" : {
+            "metropolitan statistical area/micropolitan statistical area" : "37980"
+        },
+        geoResolution: '500k'
+    },
+    function(error, response) {
+        console.log(response);
+        L.geoJson(response).addTo(mymap);
+    }
+  );
+
+/*
+//Example query with CitySDK focusing on Texas
+census(
+    {
+      vintage: 2016,
+      geoHierarchy: {
+        state: 48,
+        county: '*'
+      },
+      geoResolution: '500k',
+      sourcePath: ['cbp'],
+      predicates: {
+        NAICS2012: 211 // NAICS code for Oil and Gas Extraction
+      },
+      values: ['ESTAB'] // number of establishments
+    },
+    function(error, response) {
+        L.geoJson(response, {
+            onEachFeature: function(feature, layer) {
+              layer.bindPopup(
+                '<h2>' +
+                  feature.properties.NAME +
+                  '</h2><p># of Oil and Gas Extraction businesses: ' +
+                  feature.properties.ESTAB +
+                  '</p>'
+              );
+            }
+          }).addTo(mymap);
+    }
+  );
+*/
+
 /*
 //geoJson data that places state boundries
 L.geoJson(statesData).addTo(mymap);
 */
 
-/*
 
-// Define color scheme of map based on pop density.  Probably won't use anything below this comment for map.
+/*
+// PROBABLY WILL NOT USE ANYTHING BELOW THIS COMMENT
+
+// CHOROPLETH MAP
+// Define color scheme of map based on pop density.
 
 function getColor(d) {
     return d > 1000 ? '#800026' :
