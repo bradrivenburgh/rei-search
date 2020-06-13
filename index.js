@@ -31,6 +31,7 @@ L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 //Add a marker
 let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
 
+/*
 //Add a circle -- this might be the best option
 //if I can't get CitySDK to get geoJson files of
 //MSAs
@@ -49,7 +50,7 @@ var bounds = [[39.85, -75.29], [40.13, -74.95]];
 L.rectangle(bounds, {color: "#ff7800", weight: 1}).addTo(mymap);
 // zoom the map to the rectangle bounds
 //mymap.fitBounds(bounds);
-
+*/
 
 // Adjust zoom level if window is resized
 window.onresize = function() {
@@ -63,36 +64,36 @@ window.onresize = function() {
 }
 
 
-//Custom query with CitySDK for MSA
-census(
+//Custom query with CitySDK for MSA; unable to get MSA
+//geoJSON shapes, only national.  Use for stats only
+
+const geoShape = census(
     {
         "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
-        "vintage" : 2018, // source (year, 2018)
-        "values" : ["NAME","B01003_001E"], // metric (column for total population)
-        "geoHierarchy" : {
+        vintage: 2018, // source (year, 2018)
+        values: ["NAME", "B01003_001E"], // metric (column for total population)
+        geoHierarchy: {
             "metropolitan statistical area/micropolitan statistical area" : "37980"
-        },
-        geoResolution: '500k'
+        }
     },
     function(error, response) {
         console.log(response);
-        L.geoJson(response).addTo(mymap);
     }
   );
 
-/*
-//Example query with CitySDK focusing on Texas
+//Example query with CitySDK. I Can use this
+//to get individual geography geoJSON files!
+
 census(
     {
-      vintage: 2016,
+      vintage: 2017,
       geoHierarchy: {
-        state: 48,
-        county: '*'
+        "metropolitan statistical area/micropolitan statistical area" : "37980"
       },
       geoResolution: '500k',
       sourcePath: ['cbp'],
       predicates: {
-        NAICS2012: 211 // NAICS code for Oil and Gas Extraction
+ //       NAICS2012: 211 // NAICS code for Oil and Gas Extraction
       },
       values: ['ESTAB'] // number of establishments
     },
@@ -110,10 +111,10 @@ census(
           }).addTo(mymap);
     }
   );
-*/
+
 
 /*
-//geoJson data that places state boundries
+//geoJson data that places state boundaries
 L.geoJson(statesData).addTo(mymap);
 */
 
