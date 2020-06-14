@@ -44,9 +44,16 @@
 
         </section>
         <section class="form">
-            <form class="js-form">
-                <legend for="location">Enter your zipcode or city, state</legend>
-                <input type="text" name="location" id="js-location" placeholder="philadelphia, pa" required>
+            <form id="js-form">
+                <fieldset>
+                    <label for="location">Enter a zip code</legend>
+                    <input type="number" name="location" id="js-zipcode" placeholder="19103" pattern="(\d{5}([\-]\d{4})?)" required><br>
+    
+                    <label for="location">Enter a city and state</legend>
+                    <input type="text" name="location" id="js-city" placeholder="philadelphia, pa" pattern="/([A-Za-z]+(?: [A-Za-z]+)*),? ([A-Za-z]{2})/"><br>
+
+                    <input type="button" name="submit" value="submit">
+                </fieldset>
             </form>
         </section>
 

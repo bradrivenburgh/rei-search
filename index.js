@@ -1,96 +1,80 @@
-//Get user input
+//Render Map
 
+    // Set initial zoom for small, medium and large screens
+    let initZoom;
+
+    if (window.innerWidth < 768) {
+        initZoom = 3;
+    } else if (window.innerWidth >= 768 && screen.width < 1440) {
+        initZoom = 4;
+    } else if (window.innerWidth >= 1440) {
+        initZoom = 5;
+    }
+
+    //Main map layer
+
+    //Initialize map
+    let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
+
+    //Set the base tile layer to OpenStreetMap
+    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        //id: 'mapbox/light-v9', //Grayscale
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
+    }).addTo(mymap);
+
+
+    // Adjust zoom level if window is resized
+    window.onresize = function() {
+        if (window.innerWidth < 768) {
+            mymap.setZoom(3);
+        } else if (window.innerWidth >= 768 && window.innerWidth < 1440) {
+            mymap.setZoom(4);
+        } else if (window.innerWidth >= 1440) {
+            mymap.setZoom(5);
+        }
+    }
+
+
+//Get user input
+function getUserLocation() {
+    const zipcode = 0;
+    const city = "";
+    console.log('Ive been submitted');
+    $('#js-form').submit(event => {
+        event.preventDefault();
+        zipcode = $('js-zipcode').val();
+        city = $('js-city').val();
+    });
+    console.log(zipcode, city);
+}
+
+
+/*
 //Get user coordinates
+function coordinatesLookup()
 
 //Get MSA GEOID
+function geoidLookup()
 
-//Get statistics
-
-    //Render geoJSON shape to map with citySDK
-
-    //Get, calculate, and store population growth/decline stats
-
-    //Get, calculate, and store job market growth/decline stats
-
-    //Get and store major industries info
-
-    //Get and store types of jobs
-
-    //Get and store median salary for area
-
-//Render statistics to map pop-up
-
-//Reset variables with new search
-
-
-/* ------Map------ */
-
-let initZoom;
-
-// Set initial zoom for small, medium and large screens
-if (window.innerWidth < 768) {
-    initZoom = 3;
-} else if (window.innerWidth >= 768 && screen.width < 1440) {
-    initZoom = 4;
-} else if (window.innerWidth >= 1440) {
-    initZoom = 5;
+//Render marker indicating user coordinates to map
+function addMarkerToMap() {
+    //Add a marker
+    let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
 }
+//Get and render geoJSON shape to map with citySDK
+function addMsaToMap() {
+    
+    //Example query with CitySDK. I Can use this
+    //to get individual geography geoJSON files!
+    //Probably need to remove popup functionality
+    //and add it separately.
 
-//Main map layer
-
-//Initialize map
-let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
-
-//Set the base tile layer to OpenStreetMap
-L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    //id: 'mapbox/light-v9', //Grayscale
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
-}).addTo(mymap);
-
-
-//Add a marker
-let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
-
-// Adjust zoom level if window is resized
-window.onresize = function() {
-    if (window.innerWidth < 768) {
-        mymap.setZoom(3);
-    } else if (window.innerWidth >= 768 && window.innerWidth < 1440) {
-        mymap.setZoom(4);
-    } else if (window.innerWidth >= 1440) {
-        mymap.setZoom(5);
-    }
-}
-
-//Custom query with CitySDK for MSA; unable to get MSA
-//geoJSON shapes from acs 1-year data, only national.  
-//Use acs1 for stats only
-
-const geoShape = census(
-    {
-        "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
-        vintage: 2018, // source (year, 2018)
-        values: ["NAME", "B01003_001E"], // metric (column for total population)
-        geoHierarchy: {
-            "metropolitan statistical area/micropolitan statistical area" : "37980"
-        }
-    },
-    function(error, response) {
-        console.log(response);
-    }
-  );
-
-//Example query with CitySDK. I Can use this
-//to get individual geography geoJSON files!
-//Probably need to remove popup functionality
-//and add it separately.
-
-census(
+    census(
     {
       vintage: 2017,
       geoHierarchy: {
@@ -114,10 +98,58 @@ census(
           }).addTo(mymap);
     }
   );
+}
 
+//Get statistics
+function getStats() {
+    //Custom query with CitySDK for MSA; unable to get MSA
+//geoJSON shapes from acs 1-year data, only national.  
+//Use acs1 for stats only
+
+census(
+    {
+        "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
+        vintage: 2018, // source (year, 2018)
+        values: ["NAME", "B01003_001E"], // metric (column for total population)
+        geoHierarchy: {
+            "metropolitan statistical area/micropolitan statistical area" : "37980"
+        }
+    },
+    function(error, response) {
+        console.log(response);
+    }
+  );
+
+}
+
+//Get, calculate, and store population growth/decline stats
+function calcPopStats()
+
+//Get, calculate, and store job market growth/decline stats
+function calcJobMarketStats()
+
+//Calculate price-to-rent ratio
+function calcPriceToRent()
+
+//Determine top 5 industries
+function topIndustries()
+
+//Get and store median salary for area
+
+//Get and store types of jobs??
+
+//Render statistics to map pop-up
+function addStatsToMap()
+
+//Reset variables with new search
+function resetApp()
+*/
+
+function handleSearch() {
+}
 
 //Run app
-//$(handleSearch);
+$(handleSearch);
 
 /* ----
 
