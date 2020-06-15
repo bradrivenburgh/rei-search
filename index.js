@@ -148,6 +148,7 @@ function addMSAToMap(lon, lat) {
       values: ['PAYANN']
     },
     function(error, response) {
+        getStats(response.features[0].properties.GEOID);
         msaData.shape =  L.geoJson(response, {
             onEachFeature: function(feature, layer) {
               layer.bindPopup(
@@ -170,9 +171,47 @@ function addMarkerToMap(lat, lon) {
     msaData.marker = L.marker([lon, lat]).addTo(mymap);
 }
 
-/*
+
 //Get statistics
-function getStats() {
+function getStats(geoid) {
+    const endPointURL = `https://api.census.gov/data/2018/acs/acs1/cprofile.html`;
+    const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E&';
+    const params = {
+        for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
+        key: censusKey
+    }
+    const queryString = formatQueryParams(params);
+    const url = endPointURL + '?' + variables + queryString;
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        })
+        .then(responseJson => {
+            console.log(responseJson);
+            //Get occupations
+            const occupations = [];
+            const industries = [];
+            const medianPriceRent = [];
+            for (let i = 0; i < responseJson[0].length; i++) {
+                i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
+                i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
+                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][18] ) :
+                i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
+                console.log('I just need the MSA name!');
+            }
+
+        })
+        .catch(error => {
+            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        });
+
+
+
+/*
     //Custom query with CitySDK for MSA; unable to get MSA
     //geoJSON shapes from acs 1-year data, only national.  
     //Use acs1 for stats only
@@ -190,25 +229,31 @@ function getStats() {
             console.log(response);
         }
     );
+*/
+}
+
+
+//Get, calculate, and store population growth/decline stats
+function calcPopStats() {
 
 }
 
-//Get, calculate, and store population growth/decline stats
-function calcPopStats()
-
-//Get, calculate, and store job market growth/decline stats
-function calcJobMarketStats()
-
 //Calculate price-to-rent ratio
-function calcPriceToRent()
+function calcPriceToRent() {
 
-//Determine top 5 industries
-function topIndustries()
+}
 
-//Get and store median salary for area
+//Determine top 3 industries
+function topIndustries(industries) {
 
-//Get and store types of jobs??
 
+}
+
+//Determine top 3 occupation types
+function topOccupations() {
+    
+}
+/*
 //Render statistics to map pop-up
 function addStatsToMap()
 
