@@ -45,13 +45,30 @@ window.onresize = function() {
     }
 }
 
-function clearMap() {
-    
+const msaData = {
+    'shape': '',
+    'marker': '',
+    'stats': {}
+}
 
-    mymap.eachLayer(function (layer) {
-        console.log(layer);
-        console.log(mymap.getLayerID(layer));
+/*
+const overlay = L.layerGroup([msaData.shape, msaData.marker]);
+
+
+function addOverlayToMap() {
+    overlay.addTo(mymap);
+}
+*/
+
+function clearMap() {    
+    $('section.form').on('submit', event => {
+        if (msaData.shape._leaflet_id > 0) {
+            mymap.removeLayer(msaData.marker);
+            mymap.removeLayer(msaData.shape);    
+        }    
     });
+
+
 }
 
 //Get user input
@@ -61,8 +78,6 @@ function getUserLocation() {
     
     $('section.form').on('submit', event => {
         event.preventDefault();
-
-        clearMap();
         zipcode = $('#js-zipcode').val();
         city = $('#js-city').val();
         
@@ -135,7 +150,7 @@ function addMSAToMap(lon, lat) {
       values: ['PAYANN']
     },
     function(error, response) {
-        L.geoJson(response, {
+        msaData.shape =  L.geoJson(response, {
             onEachFeature: function(feature, layer) {
               layer.bindPopup(
                 '<h2>' +
@@ -146,15 +161,15 @@ function addMSAToMap(lon, lat) {
               );
             }
           }).addTo(mymap);
-    }
+          mymap.fitBounds(msaData.shape.getBounds());
+        }
   );
+  
 }
 
 //Render marker indicating user coordinates to map
-function addMarkerToMap(lat, lon) {
-    console.log("Adding marker at " + lat + " " + lon);
-    //Add a marker
-    let marker = L.marker([lon, lat]).addTo(mymap);
+function addMarkerToMap(lat, lon) {    
+    msaData.marker = L.marker([lon, lat]).addTo(mymap);
 }
 
 /*
@@ -205,10 +220,14 @@ function resetApp()
 
 function handleSearch() {
     getUserLocation();
+    clearMap();
 }
 
 //Run app
 $(handleSearch);
+
+
+
 
 /* ----
 
