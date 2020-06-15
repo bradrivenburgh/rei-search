@@ -3,9 +3,7 @@
 //Census API Key
 const censusKey = '411334e38c7e68a6db0c7768a0a69ff590d3706b';
 
-
 //Render map globally
-
 // Set initial zoom for small, medium and large screens
 let initZoom;
 
@@ -16,8 +14,6 @@ if (window.innerWidth < 768) {
 } else if (window.innerWidth >= 1440) {
     initZoom = 5;
 }
-
-//Main map layer
 
 //Initialize map
 let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
@@ -52,23 +48,30 @@ const msaData = {
 }
 
 /*
+//Attempt to add msaData properties as a layer; TO DO   
 const overlay = L.layerGroup([msaData.shape, msaData.marker]);
 
 
 function addOverlayToMap() {
+    $('#js-form').on('submit', event => {
+        if (msaData.shape.length === 0) {
+            msaData.shape.addTo(mymap);
+            mymap.fitBounds(msaData.shape.getBounds());
+            msaData.marker.addTo(mymap);
+        }    
+    });
+    
     overlay.addTo(mymap);
 }
 */
 
 function clearMap() {    
-    $('section.form').on('submit', event => {
+    $('#js-form').on('submit', event => {
         if (msaData.shape._leaflet_id > 0) {
             mymap.removeLayer(msaData.marker);
             mymap.removeLayer(msaData.shape);    
         }    
     });
-
-
 }
 
 //Get user input
@@ -76,7 +79,7 @@ function getUserLocation() {
     let zipcode = $('#js-zipcode').val();
     let city = $('#js-city').val();
     
-    $('section.form').on('submit', event => {
+    $('#js-form').on('submit', event => {
         event.preventDefault();
         zipcode = $('#js-zipcode').val();
         city = $('#js-city').val();
@@ -101,14 +104,11 @@ function formatQueryParams(params) {
 //Get user coordinates -- second API call (MapBox Geocoding API)
 function coordinatesLookup(userLocation) {
     const mapBoxAccessToken = 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g';
-
     const endPointURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLocation}.json`;
-
     const params = {
         limit: 1,
         access_token: mapBoxAccessToken
     }
-
     const queryString = formatQueryParams(params);
     const url = endPointURL + '?' + queryString;
 
@@ -121,9 +121,7 @@ function coordinatesLookup(userLocation) {
         })
         .then(responseJson => {
             const lon = responseJson.features[0].center[0];
-            console.log('lon is ' + lon);
             const lat = responseJson.features[0].center[1];
-            console.log('lat is ' + lat);
             addMSAToMap(lon, lat);
             addMarkerToMap(lon, lat);
         })
@@ -176,22 +174,22 @@ function addMarkerToMap(lat, lon) {
 //Get statistics
 function getStats() {
     //Custom query with CitySDK for MSA; unable to get MSA
-//geoJSON shapes from acs 1-year data, only national.  
-//Use acs1 for stats only
+    //geoJSON shapes from acs 1-year data, only national.  
+    //Use acs1 for stats only
 
-census(
-    {
-        "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
-        vintage: 2018, // source (year, 2018)
-        values: ["NAME", "B01003_001E"], // metric (column for total population)
-        geoHierarchy: {
-            "metropolitan statistical area/micropolitan statistical area" : "37980"
+    census(
+        {
+            "sourcePath" : ["acs","acs1"], // source (survey, ACS 1-year profile estimate)
+            vintage: 2018, // source (year, 2018)
+            values: ["NAME", "B01003_001E"], // metric (column for total population)
+            geoHierarchy: {
+                "metropolitan statistical area/micropolitan statistical area" : "37980"
+            }
+        },
+        function(error, response) {
+            console.log(response);
         }
-    },
-    function(error, response) {
-        console.log(response);
-    }
-  );
+    );
 
 }
 
