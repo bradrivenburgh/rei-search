@@ -1,98 +1,148 @@
-//Render Map
+'use strict'
 
-    // Set initial zoom for small, medium and large screens
-    let initZoom;
+//Census API Key
+const censusKey = '411334e38c7e68a6db0c7768a0a69ff590d3706b';
 
+
+//Render map globally
+
+// Set initial zoom for small, medium and large screens
+let initZoom;
+
+if (window.innerWidth < 768) {
+    initZoom = 3;
+} else if (window.innerWidth >= 768 && screen.width < 1440) {
+    initZoom = 4;
+} else if (window.innerWidth >= 1440) {
+    initZoom = 5;
+}
+
+//Main map layer
+
+//Initialize map
+let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
+
+//Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
+L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    //id: 'mapbox/light-v9', //Grayscale
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
+}).addTo(mymap);
+
+
+// Adjust zoom level if window is resized
+window.onresize = function() {
     if (window.innerWidth < 768) {
-        initZoom = 3;
-    } else if (window.innerWidth >= 768 && screen.width < 1440) {
-        initZoom = 4;
+        mymap.setZoom(3);
+    } else if (window.innerWidth >= 768 && window.innerWidth < 1440) {
+        mymap.setZoom(4);
     } else if (window.innerWidth >= 1440) {
-        initZoom = 5;
+        mymap.setZoom(5);
     }
+}
 
-    //Main map layer
+function clearMap() {
+    
 
-    //Initialize map
-    let mymap = L.map('mapid').setView([37.828, -96.9], initZoom);
-
-    //Set the base tile layer to OpenStreetMap
-    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        //id: 'mapbox/light-v9', //Grayscale
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
-    }).addTo(mymap);
-
-
-    // Adjust zoom level if window is resized
-    window.onresize = function() {
-        if (window.innerWidth < 768) {
-            mymap.setZoom(3);
-        } else if (window.innerWidth >= 768 && window.innerWidth < 1440) {
-            mymap.setZoom(4);
-        } else if (window.innerWidth >= 1440) {
-            mymap.setZoom(5);
-        }
-    }
-
+    mymap.eachLayer(function (layer) {
+        console.log(layer);
+        console.log(mymap.getLayerID(layer));
+    });
+}
 
 //Get user input
 function getUserLocation() {
-    const zipcode = 0;
-    const city = "";
-    console.log('Ive been submitted');
-    $('#js-form').submit(event => {
-        event.preventDefault();
-        zipcode = $('js-zipcode').val();
-        city = $('js-city').val();
-    });
-    console.log(zipcode, city);
-}
-
-
-/*
-//Get user coordinates
-function coordinatesLookup()
-
-//Get MSA GEOID
-function geoidLookup()
-
-//Render marker indicating user coordinates to map
-function addMarkerToMap() {
-    //Add a marker
-    let marker = L.marker([40.0115, -75.1327]).addTo(mymap);
-}
-//Get and render geoJSON shape to map with citySDK
-function addMsaToMap() {
+    let zipcode = $('#js-zipcode').val();
+    let city = $('#js-city').val();
     
-    //Example query with CitySDK. I Can use this
-    //to get individual geography geoJSON files!
-    //Probably need to remove popup functionality
-    //and add it separately.
+    $('section.form').on('submit', event => {
+        event.preventDefault();
 
+        clearMap();
+        zipcode = $('#js-zipcode').val();
+        city = $('#js-city').val();
+        
+        if (zipcode.length > 0) {
+            coordinatesLookup(zipcode);
+        } else if (zipcode.length === 0 && city.length > 0) {
+            coordinatesLookup(city);
+        } else {
+            alert('Please submit a zipcode or city, state');
+        }
+    });
+    console.log('getUserLocation ran');
+}
+
+function formatQueryParams(params) {
+    const queryItems = Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    return queryItems.join('&');
+}
+
+//Get user coordinates -- second API call (MapBox Geocoding API)
+function coordinatesLookup(userLocation) {
+    const mapBoxAccessToken = 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g';
+
+    const endPointURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLocation}.json`;
+
+    const params = {
+        limit: 1,
+        access_token: mapBoxAccessToken
+    }
+
+    const queryString = formatQueryParams(params);
+    const url = endPointURL + '?' + queryString;
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        })
+        .then(responseJson => {
+            const lon = responseJson.features[0].center[0];
+            console.log('lon is ' + lon);
+            const lat = responseJson.features[0].center[1];
+            console.log('lat is ' + lat);
+            addMSAToMap(lon, lat);
+            addMarkerToMap(lon, lat);
+        })
+        .catch(error => {
+            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        });
+}
+
+//Determine MSA based on coordinates and render geoJSON shape
+//to map with citySDK -- third API call (census geocoder API via citySDK)
+function addMSAToMap(lon, lat) {
     census(
     {
       vintage: 2017,
       geoHierarchy: {
-        "metropolitan statistical area/micropolitan statistical area" : "37980"
+        //"metropolitan statistical area/micropolitan statistical area" : "37980"
+        "metropolitan statistical area/micropolitan statistical area": {
+            lat: lat,
+            lng: lon
+        }
       },
-      geoResolution: '500k',
+      geoResolution: '5m',
       sourcePath: ['cbp'],
-      values: ['ESTAB'] // number of establishments
+      values: ['PAYANN']
     },
     function(error, response) {
         L.geoJson(response, {
             onEachFeature: function(feature, layer) {
               layer.bindPopup(
                 '<h2>' +
-                  feature.properties.NAME +
-                  '</h2><p># of Oil and Gas Extraction businesses: ' +
-                  feature.properties.ESTAB +
-                  '</p>'
+                  feature.properties.NAME + '<h2>'
+                  //'</h2><p># of Oil and Gas Extraction businesses: ' +
+                  //feature.properties.ESTAB +
+                  //'</p>'
               );
             }
           }).addTo(mymap);
@@ -100,6 +150,14 @@ function addMsaToMap() {
   );
 }
 
+//Render marker indicating user coordinates to map
+function addMarkerToMap(lat, lon) {
+    console.log("Adding marker at " + lat + " " + lon);
+    //Add a marker
+    let marker = L.marker([lon, lat]).addTo(mymap);
+}
+
+/*
 //Get statistics
 function getStats() {
     //Custom query with CitySDK for MSA; unable to get MSA
@@ -146,6 +204,7 @@ function resetApp()
 */
 
 function handleSearch() {
+    getUserLocation();
 }
 
 //Run app
@@ -247,4 +306,37 @@ var geojson;
 		style: style,
 		onEachFeature: onEachFeature
 	}).addTo(mymap);
+
+//Get MSA GEOID -- CORS issue, may need to cut and just use citySDK
+function geoidLookup(lon, lat) {
+    const endPointURL = `https://geocoding.geo.census.gov/geocoder/geographies/coordinates`;
+
+    const params = {
+        x: lon,
+        y: lat,
+        format: 'json',
+        benchmark: 'Public_AR_Current',
+        vintage: 'Current_Current',
+        layers: 'Metropolitan Statistical Areas'
+    }
+
+    const queryString = formatQueryParams(params);
+    const url = endPointURL + '?' + queryString;
+    console.log(url);    
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                console.log(response);
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        })
+        .then(responseJson => {
+            console.log(responseJson);
+        })
+        .catch(error => {
+            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        })
+}
 */
