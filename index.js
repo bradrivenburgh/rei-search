@@ -149,6 +149,7 @@ function addMSAToMap(lon, lat) {
     },
     function(error, response) {
         getStats(response.features[0].properties.GEOID);
+        msaData.stats.msaName = response.features[0].properties.NAME; 
         msaData.shape =  L.geoJson(response, {
             onEachFeature: function(feature, layer) {
               layer.bindPopup(
@@ -162,8 +163,7 @@ function addMSAToMap(lon, lat) {
           }).addTo(mymap);
           mymap.fitBounds(msaData.shape.getBounds());
         }
-  );
-  
+  );  
 }
 
 //Render marker indicating user coordinates to map
@@ -201,8 +201,11 @@ function getStats(geoid) {
                 i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
                 i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][18] ) :
                 i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
-                console.log('I just need the MSA name!');
+                console.log('Finished gathering acs1 stats');
             }
+            topOccupations(occupations);
+            topIndustries(industries);
+            calcPriceToRent(medianPriceRent);
 
         })
         .catch(error => {
@@ -239,20 +242,44 @@ function calcPopStats() {
 }
 
 //Calculate price-to-rent ratio
-function calcPriceToRent() {
-
+function calcPriceToRent(medianPriceRent) {
+    msaData.stats.priceRentRatio = medianPriceRent[1] / medianPriceRent[0];
 }
 
 //Determine top 3 industries
 function topIndustries(industries) {
-
-
+    const labeledIndustries = [
+        {industry:'Agriculture, forestry, fishing and hunting, and mining', pop: 0},
+        {industry: 'Construction', pop: 0},
+        {industry: 'Manufacturing', pop: 0},
+        {industry: 'Wholesale trade', pop: 0},
+        {industry: 'Retail trade', pop: 0},
+        {industry: 'Transportation and warehousing, and utilities', pop: 0},
+        {industry: 'Information', pop: 0},
+        {industry: 'Finance and insurance, and real estate and rental and leasing', pop: 0},
+        {industry: 'Professional, scientific, and management, and administrative and waste management services', pop: 0},
+        {industry: 'Educational services, and health care and social assistance', pop: 0},
+        {industry: 'Arts, entertainment, and recreation, and accommodation and food services', pop: 0},
+        {industry: 'Other services, except public administration', pop: 0},
+        {industry: 'Public administration', pop: 0}
+    ];
+    for (let i = 0; i < industries.length; i++) {
+        labeledIndustries[i].pop = industries[i];
+    }
+    let sortedIndustries = labeledIndustries.sort( (a, b) => b.pop - a.pop );
+    msaData.stats.topThreeIndustries = [];
+    for (let i = 0; i < 3; i++) {
+        msaData.stats.topThreeIndustries.push(sortedIndustries[i]);
+    }
+    console.log(msaData.stats.topThreeIndustries);
+    console.log(msaData.stats.msaName);
 }
 
 //Determine top 3 occupation types
-function topOccupations() {
+function topOccupations(occupations) {
     
 }
+
 /*
 //Render statistics to map pop-up
 function addStatsToMap()
