@@ -10,7 +10,7 @@ const msaData = {
     'stats': {}
 }
 
-//Initialize map
+//Initialize map with boundaries
 const bounds = [
     [75.255846, -179.734770],
     [-16.190105, -0.222074] 
@@ -42,8 +42,8 @@ function onMapLoad() {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 14,
         minZoom: 2,
-        //id: 'mapbox/light-v9', //Grayscale
-        id: 'mapbox/streets-v11',
+        id: 'mapbox/light-v9', //Grayscale
+        //id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
         accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
@@ -74,7 +74,7 @@ function clearMap() {
     });
 }
 
-// user input
+// Listen for and capture user input
 function handleUserLocation() {
     $('#js-form').on('submit', event => {
         event.preventDefault();
@@ -172,7 +172,7 @@ function addMarkerToMap(lat, lng) {
     msaData.marker = L.marker([lng, lat]).addTo(mymap);
 }
 
-//Retrieve statistics from census
+//Retrieve statistics from census acs1 endpoint
 function handleStats(geoid) {
     const endPointURL = `https://api.census.gov/data/2018/acs/acs1/cprofile.html`;
     const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E&';
@@ -201,28 +201,52 @@ function handleStats(geoid) {
                 i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
                 console.log('Finished gathering acs1 stats');
             }
-            topOccupations(occupations);
+            topOccupationTypes(occupations);
             topIndustries(industries);
             calcPriceToRent(medianPriceRent);
-
         })
         .catch(error => {
             $('#js-error-message').text(`Something went wrong: ${error.message}`);
         });
 }
 
+/*
 //Calculate, and store population growth/decline stats
 function calcPopStats() {
 
 }
+*/
 
 //Calculate price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
-    msaData.stats.priceRentRatio = medianPriceRent[1] / medianPriceRent[0];
+    console.log('calcPriceToRent ran');
+    msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
+}
+
+//Determine top 3 occupation types
+function topOccupationTypes(occupations) {
+    console.log('topOccupationTypes ran');
+    console.log(occupations);
+    const labeledOccupations = [
+        {occupation:'Management, business, science, and arts occupations', population: 0},
+        {occupation:'Service occupations', population: 0},
+        {occupation:'Sales and office occupations', population: 0},
+        {occupation:'Natural resources, construction, and maintenance occupations', population: 0},
+        {occupation:'Production, transportation, and material moving occupations', population: 0}
+    ];
+    for (let i = 0; i < occupations.length; i++) {
+        labeledOccupations[i].population = occupations[i];
+    }
+    let sortedOccupations = labeledOccupations.sort( (a, b) => b.population - a.population );
+    msaData.stats.topThreeOccupationTypes = [];
+    for (let i = 0; i < 3; i++) {
+        msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
+    }
 }
 
 //Determine top 3 industries
 function topIndustries(industries) {
+    console.log('topIndustries ran');
     const labeledIndustries = [
         {industry:'Agriculture, forestry, fishing and hunting, and mining', population: 0},
         {industry: 'Construction', population: 0},
@@ -246,11 +270,6 @@ function topIndustries(industries) {
     for (let i = 0; i < 3; i++) {
         msaData.stats.topThreeIndustries.push(sortedIndustries[i]);
     }
-}
-
-//Determine top 3 occupation types
-function topOccupations(occupations) {
-    
 }
 
 /*
