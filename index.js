@@ -15,17 +15,18 @@ let mymap = L.map('mapid');
 
 function onMapLoad() {
     // Set initial zoom for small, medium and large screens
-    let initZoom;
+    let resetZoom;
 
     if (window.innerWidth < 768) {
-        initZoom = 3;
+        resetZoom = 3;
     } else if (window.innerWidth >= 768 && screen.width < 1440) {
-        initZoom = 4;
+        resetZoom = 4;
     } else if (window.innerWidth >= 1440) {
-        initZoom = 5;
+        resetZoom = 5;
     }
 
-    mymap.setView([37.828, -96.9], initZoom);
+    mymap.setView([37.828, -96.9], 3);
+    mymap.setZoom(resetZoom);
 
     //Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
