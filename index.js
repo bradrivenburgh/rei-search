@@ -11,9 +11,10 @@ const msaData = {
 }
 
 //Initialize map
-let mymap = L.map('mapid');
+let mymap = L.map('mapid').setView([37.828, -96.9], 3);
 
 function onMapLoad() {
+
     // Set initial zoom for small, medium and large screens
     let resetZoom;
 
@@ -24,14 +25,13 @@ function onMapLoad() {
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
     }
-
-    mymap.setView([37.828, -96.9], 3);
-    mymap.setView([37.828, -96.9],resetZoom);
+    mymap.setView([37.828, -96.9], resetZoom);
 
     //Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
+        maxZoom: 14,
+        minZoom: 2,
         //id: 'mapbox/light-v9', //Grayscale
         id: 'mapbox/streets-v11',
         tileSize: 512,
