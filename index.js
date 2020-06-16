@@ -26,7 +26,7 @@ function onMapLoad() {
     }
 
     mymap.setView([37.828, -96.9], 3);
-    mymap.setZoom(resetZoom);
+    mymap.setView([37.828, -96.9],resetZoom);
 
     //Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
