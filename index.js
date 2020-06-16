@@ -11,7 +11,19 @@ const msaData = {
 }
 
 //Initialize map
-let mymap = L.map('mapid').setView([37.828, -96.9], 3);
+const bounds = [
+    [75.255846, -179.734770],
+    [-16.190105, -0.222074] 
+];
+
+let mymap = new L.map('mapid', {
+    center: [37.828, -96.9],
+    zoom: 3,
+    maxBounds: bounds,
+    maxBoundsViscosity: 1.0
+});
+
+//let mymap = new L.map('mapid').setView([37.828, -96.9], 3);
 
 function onMapLoad() {
 
