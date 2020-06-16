@@ -23,8 +23,6 @@ let mymap = new L.map('mapid', {
     maxBoundsViscosity: 1.0
 });
 
-//let mymap = new L.map('mapid').setView([37.828, -96.9], 3);
-
 function onMapLoad() {
 
     // Set initial zoom for small, medium and large screens
