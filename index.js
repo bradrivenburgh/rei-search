@@ -132,18 +132,22 @@ function coordinatesLookup(userLocation) {
 function addMSAToMap(lng, lat) {
     census(
     {
-      vintage: 2017,
-      geoHierarchy: {
-        "metropolitan statistical area/micropolitan statistical area": {
+        vintage: 2017,
+        geoHierarchy: {
+        'metropolitan statistical area/micropolitan statistical area': {
             lat: lat,
             lng: lng
         }
-      },
-      geoResolution: '5m',
-      sourcePath: ['cbp'],
-      values: ['PAYANN']
+        },
+        geoResolution: '5m',
+        sourcePath: ['cbp'],
+        values: [ 
+        'EMP'
+        ],
+        statsKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b'
     },
     (error, response) => {
+        console.log(response);
         if (!response){
             $('#js-error-message').text(`Something went wrong: ${error}. 
             Please enter another location`);
@@ -154,8 +158,9 @@ function addMSAToMap(lng, lat) {
         msaData.shape =  L.geoJson(response, {
             onEachFeature: (feature, layer) => {
                 layer.bindPopup(
-                '<h2>' +
-                    feature.properties.NAME + '<h2>'
+                '<h6>' + 'MSA Name: ' +
+                    feature.properties.NAME + 
+                '<h6>'
                     //'</h2><p># of Oil and Gas Extraction businesses: ' +
                     //feature.properties.ESTAB +
                     //'</p>'
@@ -172,16 +177,23 @@ function addMarkerToMap(lat, lng) {
     msaData.marker = L.marker([lng, lat]).addTo(mymap);
 }
 
-//Retrieve statistics from census acs1 endpoint
 function handleStats(geoid) {
+    handleAcsStats(geoid);
+    handleCbpStats(geoid);
+    handlePepStats(geoid);
+}
+
+
+//Retrieve statistics from census acs1 endpoint
+function handleAcsStats(geoid) {
     const endPointURL = `https://api.census.gov/data/2018/acs/acs1/cprofile.html`;
-    const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E&';
+    const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E';
     const params = {
         for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
         key: censusKey
     }
     const queryString = formatQueryParams(params);
-    const url = endPointURL + '?' + variables + queryString;
+    const url = endPointURL + '?' + variables + '&' + queryString;
 
     fetch(url)
         .then(response => {
@@ -197,7 +209,7 @@ function handleStats(geoid) {
             for (let i = 0; i < responseJson[0].length; i++) {
                 i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
                 i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
-                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][18] ) :
+                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][i] ) :
                 i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
                 console.log('Finished gathering acs1 stats');
             }
@@ -208,7 +220,54 @@ function handleStats(geoid) {
         .catch(error => {
             $('#js-error-message').text(`Something went wrong: ${error.message}`);
         });
+
 }
+//Retrieve statistics from the cbp endpoint
+function handleCbpStats(geoid) {
+    const endPointURL = `https://api.census.gov/data/2017/cbp`;
+    const variables = 'get=NAICS2017_LABEL,NAICS2017,EMPSZES_LABEL,EMPSZES,EMP';
+    const predicates = 'EMPSZES=001';
+    const params = {
+        for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
+        key: censusKey
+    }
+    const queryString = formatQueryParams(params);
+    const url = endPointURL + '?' + variables + '&' + predicates + '&' + queryString;
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        })
+        .then(responseJson => {
+            console.log(responseJson);
+/*
+            const occupations = [];
+            const industries = [];
+            const medianPriceRent = [];
+            for (let i = 0; i < responseJson[0].length; i++) {
+                i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
+                i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
+                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][18] ) :
+                i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
+                console.log('Finished gathering acs1 stats');
+            }
+            topOccupationTypes(occupations);
+            topIndustries(industries);
+            calcPriceToRent(medianPriceRent);
+*/
+        })
+        .catch(error => {
+            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        });
+}
+//Retrieve statistics from the pep endpoint
+function handlePepStats(geoid) {
+
+}
+
 
 /*
 //Calculate, and store population growth/decline stats
