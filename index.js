@@ -154,7 +154,9 @@ function addMSAToMap(lng, lat) {
         }
         handleStats(response.features[0].properties.GEOID);
         msaData.stats.msaName = response.features[0].properties.NAME; 
-        msaData.shape =  L.geoJson(response, {
+        msaData.shape =  L.geoJson(response /*, {
+            
+
             onEachFeature: (feature, layer) => {
                 layer.bindPopup(
                 '<h6>' + 'MSA Name: ' +
@@ -165,8 +167,10 @@ function addMSAToMap(lng, lat) {
                     //'</p>'
                 );
             }
-            }).addTo(mymap);
+
+            } */).addTo(mymap);
             mymap.fitBounds(msaData.shape.getBounds());
+            addStatsToMap();
     }   
     );  
 }
@@ -369,13 +373,17 @@ function topBusinesses(businessType) {
     console.log('topBusinesses ran');
 }
 
-/*
+
 //Render statistics to map pop-up
-function addStatsToMap()
+function addStatsToMap() {
+    msaData.shape.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+}
 
 //Reset variables with new search
-function resetApp()
-*/
+function resetApp() {
+
+}
+
 
 function handleSearch() {
     onMapLoad();
