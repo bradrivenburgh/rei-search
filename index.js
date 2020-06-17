@@ -179,7 +179,7 @@ function addMarkerToMap(lat, lng) {
 function handleStats(geoid) {
     handleAcsStats(geoid);
     handleCbpStats(geoid);
-//    handlePepStats(geoid);
+    handlePepStats(geoid);
 }
 
 
@@ -250,21 +250,59 @@ function handleCbpStats(geoid) {
         console.log('handlCbpStats ran');
 }
 
-/*
+
 //Retrieve statistics from the pep endpoint
 function handlePepStats(geoid) {
+    const endPointURL = `https://api.census.gov/data/2019/pep/population`;
+    const variables = 'get=DATE_CODE,DATE_DESC,POP';
+    const params = {
+        for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
+        key: censusKey
+    }
+    const queryString = formatQueryParams(params);
+    const url = endPointURL + '?' + variables + '&' + queryString;
+
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response.statusText);
+        })
+        .then(responseJson => {
+            calcPopStats(responseJson);
+        })
+        .catch(error => {
+            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        });
+        console.log('handlPepStats ran');
 
 }
 
 //Calculate, and store population growth/decline stats
-function calcPopStats() {
-
+function calcPopStats(popStats) {
+    const popDiff = [];
+    for (let i = 3; i < popStats.length -1; i++) {
+        popDiff.push( 
+            {
+                growthOrDecline: popStats[i + 1][2] - popStats[i][2],
+                populationTotal: parseInt( popStats[i][2] ) 
+            }
+            );
+    }
+    const cumulativeGrowthOrDecline = popDiff.reduce ( (acc, diff) =>  
+    acc + diff.growthOrDecline, 0);
+    const averageTotalPopulation = popDiff.reduce ( (acc, diff) => 
+    acc + diff.populationTotal, 0) / popDiff.length;
+    console.log(cumulativeGrowthOrDecline, averageTotalPopulation);
+    msaData.stats.popGrowthDeclineRate = ( (cumulativeGrowthOrDecline / averageTotalPopulation) * 100 ).toFixed(2);
+        
+    console.log(msaData.stats.popGrowthDeclineRate);
 }
-*/
+
 
 //Calculate price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
-    console.log('calcPriceToRent running');
     msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
     console.log('calcPriceToRent ran');
 }
@@ -291,7 +329,6 @@ function topOccupationTypes(occupations) {
 
 //Determine top 3 industries
 function topIndustries(industries) {
-    console.log('topIndustries running');
     const labeledIndustries = [
         {industry:'Agriculture, forestry, fishing and hunting, and mining', population: 0},
         {industry: 'Construction', population: 0},
