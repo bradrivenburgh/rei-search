@@ -147,7 +147,6 @@ function addMSAToMap(lng, lat) {
         statsKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b'
     },
     (error, response) => {
-        console.log(response);
         if (!response){
             $('#js-error-message').text(`Something went wrong: ${error}. 
             Please enter another location`);
@@ -180,13 +179,13 @@ function addMarkerToMap(lat, lng) {
 function handleStats(geoid) {
     handleAcsStats(geoid);
     handleCbpStats(geoid);
-    handlePepStats(geoid);
+//    handlePepStats(geoid);
 }
 
 
 //Retrieve statistics from census acs1 endpoint
 function handleAcsStats(geoid) {
-    const endPointURL = `https://api.census.gov/data/2018/acs/acs1/cprofile.html`;
+    const endPointURL = `https://api.census.gov/data/2018/acs/acs1/cprofile`;
     const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E';
     const params = {
         for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
@@ -214,14 +213,15 @@ function handleAcsStats(geoid) {
                 console.log('Finished gathering acs1 stats');
             }
             topOccupationTypes(occupations);
-            topIndustries(industries);
             calcPriceToRent(medianPriceRent);
+            topIndustries(industries);
         })
         .catch(error => {
             $('#js-error-message').text(`Something went wrong: ${error.message}`);
         });
-
+        console.log('handleAcsStats ran');
 }
+
 //Retrieve statistics from the cbp endpoint
 function handleCbpStats(geoid) {
     const endPointURL = `https://api.census.gov/data/2017/cbp`;
@@ -242,34 +242,20 @@ function handleCbpStats(geoid) {
             throw new Error(response.statusText);
         })
         .then(responseJson => {
-            console.log(responseJson);
-/*
-            const occupations = [];
-            const industries = [];
-            const medianPriceRent = [];
-            for (let i = 0; i < responseJson[0].length; i++) {
-                i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
-                i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
-                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][18] ) :
-                i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
-                console.log('Finished gathering acs1 stats');
-            }
-            topOccupationTypes(occupations);
-            topIndustries(industries);
-            calcPriceToRent(medianPriceRent);
-*/
+            topBusinesses(responseJson);
         })
         .catch(error => {
             $('#js-error-message').text(`Something went wrong: ${error.message}`);
         });
+        console.log('handlCbpStats ran');
 }
+
+/*
 //Retrieve statistics from the pep endpoint
 function handlePepStats(geoid) {
 
 }
 
-
-/*
 //Calculate, and store population growth/decline stats
 function calcPopStats() {
 
@@ -278,14 +264,13 @@ function calcPopStats() {
 
 //Calculate price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
-    console.log('calcPriceToRent ran');
+    console.log('calcPriceToRent running');
     msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
+    console.log('calcPriceToRent ran');
 }
 
 //Determine top 3 occupation types
 function topOccupationTypes(occupations) {
-    console.log('topOccupationTypes ran');
-    console.log(occupations);
     const labeledOccupations = [
         {occupation:'Management, business, science, and arts occupations', population: 0},
         {occupation:'Service occupations', population: 0},
@@ -301,11 +286,12 @@ function topOccupationTypes(occupations) {
     for (let i = 0; i < 3; i++) {
         msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
     }
+    console.log('topOccupationTypes ran');
 }
 
 //Determine top 3 industries
 function topIndustries(industries) {
-    console.log('topIndustries ran');
+    console.log('topIndustries running');
     const labeledIndustries = [
         {industry:'Agriculture, forestry, fishing and hunting, and mining', population: 0},
         {industry: 'Construction', population: 0},
@@ -329,6 +315,21 @@ function topIndustries(industries) {
     for (let i = 0; i < 3; i++) {
         msaData.stats.topThreeIndustries.push(sortedIndustries[i]);
     }
+    console.log('topIndustries ran');
+}
+
+function topBusinesses(businessType) {
+    const sortedBusinessTypes = businessType.sort( (a, b) => b[4] - a[4]);
+    msaData.stats.topThreeBusinessTypes = [];
+    for (let i = 2; i < 5; i++) {
+        msaData.stats.topThreeBusinessTypes.push(
+            {
+                businessType: sortedBusinessTypes[i][0],
+                employees: sortedBusinessTypes[i][4]
+            }
+        );
+    }
+    console.log('topBusinesses ran');
 }
 
 /*
