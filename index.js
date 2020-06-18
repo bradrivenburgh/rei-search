@@ -378,7 +378,7 @@ function topBusinesses(businessType) {
 //Render statistics to map pop-up
 function addStatsToMap() {
     msaData.shape.bindPopup(`
-    <h3>${msaData.stats.msaName}<h3>
+    <h4>${msaData.stats.msaName}</h4>
     `).openPopup();
 
 }
@@ -386,7 +386,7 @@ function addStatsToMap() {
 function renderStatsToPage() {
     $('#js-stats').html(
     `
-    <h3>${msaData.stats.msaName}<h3>
+    <h3>${msaData.stats.msaName}</h3>
     <ul>
         <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
         <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
