@@ -50,6 +50,7 @@ function onMapLoad() {
     }).addTo(mymap);
 }
 
+//Call map tiles and zoom reset when map loads
 mymap.on('load', onMapLoad);
 
 // Adjust map zoom level if window is resized
@@ -65,12 +66,14 @@ function handleMapResize() {
     }
 }
 
-function clearMap() {
+function resetApp() {
     $('#js-submit').on('click', () => {
         if (msaData.shape._leaflet_id) {
             mymap.removeLayer(msaData.marker);
             mymap.removeLayer(msaData.shape);    
-        }    
+        }
+        $('#js-stats').empty();
+        $('#js-error-message').empty();        
     });
 }
 
@@ -147,28 +150,17 @@ function addMSAToMap(lng, lat) {
         statsKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b'
     },
     (error, response) => {
-        if (!response){
+        if (error) {
             $('#js-error-message').text(`Something went wrong: ${error}. 
             Please enter another location`);
-            throw new Error(response.statusText);
+            mymap.setView([37.828, -96.9], 3);
+            resetApp();
+
+            return error;
         }
         handleStats(response.features[0].properties.GEOID);
         msaData.stats.msaName = response.features[0].properties.NAME; 
-        msaData.shape =  L.geoJson(response /*, {
-            
-
-            onEachFeature: (feature, layer) => {
-                layer.bindPopup(
-                '<h6>' + 'MSA Name: ' +
-                    feature.properties.NAME + 
-                '<h6>'
-                    //'</h2><p># of Oil and Gas Extraction businesses: ' +
-                    //feature.properties.ESTAB +
-                    //'</p>'
-                );
-            }
-
-            } */).addTo(mymap);
+        msaData.shape =  L.geoJson(response).addTo(mymap);
             mymap.fitBounds(msaData.shape.getBounds());
     }   
     );  
@@ -184,7 +176,6 @@ function handleStats(geoid) {
     handleCbpStats(geoid);
     handlePepStats(geoid);
 }
-
 
 //Retrieve statistics from census acs1 endpoint
 function handleAcsStats(geoid) {
@@ -384,7 +375,7 @@ function addStatsToMap() {
 }
 
 function renderStatsToPage() {
-    $('#js-stats').html(
+    $('#js-stats').append(
     `
     <h3>${msaData.stats.msaName}</h3>
     <ul>
@@ -417,17 +408,11 @@ function renderStatsToPage() {
     );
 }
 
-//Reset variables with new search
-function resetApp() {
-
-}
-
-
 function handleSearch() {
     onMapLoad();
     handleMapResize();
     handleUserLocation();
-    clearMap();
+    resetApp();
 }
 
 //Run app

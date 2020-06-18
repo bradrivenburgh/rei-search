@@ -1,7 +1,7 @@
 /* Map */
 
 #mapid { 
-    height: 260px; 
+    height: 520px; 
 }
 
 @media screen and (min-width: 768px) {
@@ -9,7 +9,7 @@
         height: 520px;
     }
 } 
-
+/*
 @media screen and (min-width: 1024px) {
     #mapid {
         height: 650px;
@@ -21,3 +21,4 @@
         height: 780px;
     }
 }
+*/
