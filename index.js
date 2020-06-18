@@ -10,11 +10,18 @@ const msaData = {
     'stats': {}
 }
 
-const errorPopup = L.popup({maxWidth:250, className:'errorMessage'})
-.setLatLng([37.828, -96.9])
-.setContent(`<p>We could not find that location in the U.S.</p>
-<p>Please enter another zipcode or city, state</p>`);
+const errorPopups = {
+    notFound: `<p>We could not find that location in the U.S.</p>
+    <p>Please enter another zip code or city, state</p>`,
+    
+    emptyForm: `<p>Please enter a zip code or city, state</p>`,
 
+    createPopup(message) {
+        return L.popup({maxWidth:250, className:'errorMessage'})
+        .setLatLng([37.828, -96.9])
+        .setContent(`${message}`);
+    } 
+}
 
 //Initialize map with boundaries
 const bounds = [
@@ -74,12 +81,13 @@ function handleMapResize() {
 
 function resetApp() {
     $('#js-submit').on('click', () => {
+        mymap.setView([37.828, -96.9], 3);
         if (msaData.shape._leaflet_id) {
             mymap.removeLayer(msaData.marker);
             mymap.removeLayer(msaData.shape);
         }
+        $('#js-error-message').empty();
         $('#js-stats').empty();
-        $('#js-error-message').empty();        
     });
 }
 
@@ -96,8 +104,7 @@ function handleUserLocation() {
         } else if (zipcode.length === 0 && city.length > 0) {
             coordinatesLookup(city);
         } else {
-            //alert('Please submit a zipcode or city, state');
-            errorPopup.openOn(mymap);
+            errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
 
         }
     });
@@ -159,10 +166,8 @@ function addMSAToMap(lng, lat) {
     },
     (error, response) => {
         if (error) {
-            mymap.setView([37.828, -96.9], 3);
             resetApp();
-
-            errorPopup.openOn(mymap);
+            errorPopups.createPopup(errorPopups.notFound).openOn(mymap);
             
             return error;
         }
