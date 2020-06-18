@@ -170,7 +170,6 @@ function addMSAToMap(lng, lat) {
 
             } */).addTo(mymap);
             mymap.fitBounds(msaData.shape.getBounds());
-            addStatsToMap();
     }   
     );  
 }
@@ -371,12 +370,51 @@ function topBusinesses(businessType) {
         );
     }
     console.log('topBusinesses ran');
+    addStatsToMap();
+    renderStatsToPage();
 }
 
 
 //Render statistics to map pop-up
 function addStatsToMap() {
-    msaData.shape.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+    msaData.shape.bindPopup(`
+    <h3>${msaData.stats.msaName}<h3>
+    `).openPopup();
+
+}
+
+function renderStatsToPage() {
+    $('#js-stats').html(
+    `
+    <h3>${msaData.stats.msaName}<h3>
+    <ul>
+        <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
+        <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
+        <li>Median income: $${msaData.stats.medianIncome}</li>
+        <li>Top three industries:
+            <ul>
+                <li>${msaData.stats.topThreeIndustries[0].industry}: ${msaData.stats.topThreeIndustries[0].population}%</li>
+                <li>${msaData.stats.topThreeIndustries[1].industry}: ${msaData.stats.topThreeIndustries[1].population}%</li>
+                <li>${msaData.stats.topThreeIndustries[2].industry}: ${msaData.stats.topThreeIndustries[2].population}%</li>
+            </ul>
+        </li>
+        <li>Top three business types:
+            <ul>
+                <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}</li>
+                <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}</li>
+                <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}</li>
+            </ul>
+        </li>
+        <li>Top three occupation types:
+            <ul>
+                <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
+                <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
+                <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
+            </ul>
+        </li>
+    </ul>
+    `
+    );
 }
 
 //Reset variables with new search
