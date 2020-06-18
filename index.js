@@ -13,9 +13,7 @@ const msaData = {
 const errorPopups = {
     notFound: `<p>We could not find that location in the U.S.</p>
     <p>Please enter another zip code or city, state</p>`,
-    
     emptyForm: `<p>Please enter a zip code or city, state</p>`,
-
     createPopup(message) {
         return L.popup({maxWidth:250, className:'errorMessage'})
         .setLatLng([37.828, -96.9])
@@ -39,21 +37,24 @@ let mymap = new L.map('mapid', {
 function onMapLoad() {
 
     // Set initial zoom for small, medium and large screens
-    let resetZoom;
+    let resetZoom, customMaxZoom;
 
     if (window.innerWidth < 768) {
         resetZoom = 3;
+        customMaxZoom = 6;
     } else if (window.innerWidth >= 768 && screen.width < 1440) {
         resetZoom = 4;
+        customMaxZoom = 8;
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
+        customMaxZoom = 10;
     }
     mymap.setView([37.828, -96.9], resetZoom);
 
     //Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 14,
+        maxZoom: customMaxZoom,
         minZoom: 2,
         id: 'mapbox/light-v9', //Grayscale
         //id: 'mapbox/streets-v11',
@@ -375,7 +376,7 @@ function topBusinesses(businessType) {
     }
     console.log('topBusinesses ran');
     addStatsToMap();
-    renderStatsToPage();
+//    renderStatsToPage();
 }
 
 
@@ -383,10 +384,38 @@ function topBusinesses(businessType) {
 function addStatsToMap() {
     msaData.shape.bindPopup(`
     <h4>${msaData.stats.msaName}</h4>
-    `).openPopup();
-
+    <ul>
+        <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
+        <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
+        <li>Median income: $${msaData.stats.medianIncome}</li>
+        <li>Top three industries:
+            <ul>
+                <li>${msaData.stats.topThreeIndustries[0].industry}: ${msaData.stats.topThreeIndustries[0].population}%</li>
+                <li>${msaData.stats.topThreeIndustries[1].industry}: ${msaData.stats.topThreeIndustries[1].population}%</li>
+                <li>${msaData.stats.topThreeIndustries[2].industry}: ${msaData.stats.topThreeIndustries[2].population}%</li>
+            </ul>
+        </li>
+        <li>Top three business types:
+            <ul>
+                <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}</li>
+                <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}</li>
+                <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}</li>
+            </ul>
+        </li>
+        <li>Top three occupation types:
+            <ul>
+                <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
+                <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
+                <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
+            </ul>
+        </li>
+    </ul>    
+    `, {
+        maxWidth:250,
+        maxHeight:250
+    }).openPopup();
 }
-
+/*
 function renderStatsToPage() {
     $('#js-stats').append(
     `
@@ -420,7 +449,7 @@ function renderStatsToPage() {
     `
     );
 }
-
+*/
 function handleSearch() {
     onMapLoad();
     handleMapResize();
