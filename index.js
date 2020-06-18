@@ -251,6 +251,9 @@ function handleCbpStats(geoid) {
         })
         .then(responseJson => {
             topBusinesses(responseJson);
+            addStatsToMap();
+            //  renderStatsToPage();
+            
         })
         .catch(error => {
             $('#js-error-message').text(`Something went wrong: ${error.message}`);
@@ -375,8 +378,6 @@ function topBusinesses(businessType) {
         );
     }
     console.log('topBusinesses ran');
-    addStatsToMap();
-//    renderStatsToPage();
 }
 
 
