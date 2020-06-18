@@ -156,6 +156,12 @@ function addMSAToMap(lng, lat) {
             mymap.setView([37.828, -96.9], 3);
             resetApp();
 
+            const errorPopup = L.popup({maxWidth:250, className:'errorMessage'})
+                .setLatLng([37.828, -96.9])
+                .setContent(`<p>We could not find that location in the U.S.</p>
+                <p>Please enter another zipcode or city, state</p>`)
+                .openOn(mymap);
+            
             return error;
         }
         handleStats(response.features[0].properties.GEOID);
