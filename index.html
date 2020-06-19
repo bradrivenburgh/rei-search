@@ -28,38 +28,27 @@
 </head>
 
 <body>
-    <header>
-        <h1>rei-search</h1>
-    </header>
-
-    <main class="wrapper">
-        
-        <section class="form">
+    <div class="wrapper">
+        <main>   
+            <header>
+                <h1>rei-search</h1>
+            </header>
+    
             <form method="POST" action="" id="js-form">
-                <fieldset>
-                    <label for="location">Enter a zip code</label>
-                    <input type="text" name="location" id="js-zipcode" placeholder="19103" pattern="(\d{5}([\-]\d{4})?)">
-                    <p>OR</p>
-                    <label for="location">Enter a city and state</label>
-                    <input type="text" name="location" id="js-city" placeholder="philadelphia, pa" pattern="([A-Za-z]+\s?)+,\s?[A-Za-z]{2,}"><br>
-                </fieldset>
+                <label for="location">Enter a zip code</label>
+                <input type="text" name="location" id="js-zipcode" placeholder="19103" pattern="(\d{5}([\-]\d{4})?)">
+                <p>OR</p>
+                <label for="location">Enter a city and state</label>
+                <input type="text" name="location" id="js-city" placeholder="philadelphia, pa" pattern="([A-Za-z]+\s?)+,\s?[A-Za-z]{2,}"><br>
                 <input type="submit" id="js-submit" value="submit">
             </form>
-        </section>
 
-        <div id="js-error-message"></div>
+            <div id="js-error-message"></div>
+        </main>
+    </div>
+    <!--Map-->
+    <div id="mapid"></div>
 
-        <section class="map">
-            <!--Map-->
-            <div id="mapid"></div>
-        </section>
-        <section id="js-stats"></section>
-    </main>
-<!--
-    <footer>
-        <p>copyright &copy;<span id="js-copyright"></span></p>
-    </footer>
--->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="index.js"></script>
 </body>

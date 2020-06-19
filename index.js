@@ -14,6 +14,7 @@ const errorPopups = {
     notFound: `<p>We could not find that location in the U.S.</p>
     <p>Please enter another zip code or city, state</p>`,
     emptyForm: `<p>Please enter a zip code or city, state</p>`,
+    errorMessage: `Something went wrong. Please try again.`,
     createPopup(message) {
         return L.popup({maxWidth:250, className:'errorMessage'})
         .setLatLng([37.828, -96.9])
@@ -30,24 +31,29 @@ const bounds = [
 let mymap = new L.map('mapid', {
     center: [37.828, -96.9],
     zoom: 3,
+    zoomControl: false,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0
 });
 
 function onMapLoad() {
+    //Position the zoom controls
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(mymap);
 
-    // Set initial zoom for small, medium and large screens
+    //Set initial zoom for small, medium and large screens
     let resetZoom, customMaxZoom;
 
     if (window.innerWidth < 768) {
         resetZoom = 3;
-        customMaxZoom = 6;
+        customMaxZoom = 10;
     } else if (window.innerWidth >= 768 && screen.width < 1440) {
         resetZoom = 4;
-        customMaxZoom = 8;
+        customMaxZoom = 12;
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
-        customMaxZoom = 10;
+        customMaxZoom = 18;
     }
     mymap.setView([37.828, -96.9], resetZoom);
 
@@ -56,8 +62,8 @@ function onMapLoad() {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: customMaxZoom,
         minZoom: 2,
-        id: 'mapbox/light-v9', //Grayscale
-        //id: 'mapbox/streets-v11',
+        //id: 'mapbox/light-v9', //Grayscale
+        id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
         accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
@@ -82,13 +88,10 @@ function handleMapResize() {
 
 function resetApp() {
     $('#js-submit').on('click', () => {
-        mymap.setView([37.828, -96.9], 3);
         if (msaData.shape._leaflet_id) {
             mymap.removeLayer(msaData.marker);
             mymap.removeLayer(msaData.shape);
         }
-        $('#js-error-message').empty();
-        $('#js-stats').empty();
     });
 }
 
@@ -142,7 +145,8 @@ function coordinatesLookup(userLocation) {
             addMarkerToMap(lng, lat);
         })
         .catch(error => {
-            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+            console.log(error.message);
+            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
 }
 
@@ -167,6 +171,7 @@ function addMSAToMap(lng, lat) {
     },
     (error, response) => {
         if (error) {
+            mymap.setView([37.828, -96.9], 3);
             resetApp();
             errorPopups.createPopup(errorPopups.notFound).openOn(mymap);
             
@@ -175,7 +180,20 @@ function addMSAToMap(lng, lat) {
         handleStats(response.features[0].properties.GEOID);
         msaData.stats.msaName = response.features[0].properties.NAME; 
         msaData.shape =  L.geoJson(response).addTo(mymap);
+
+        if (window.innerWidth <= 320) {
+            mymap.fitBounds(msaData.shape.getBounds(), {
+                paddingTopLeft: [40,500]
+            });    
+        }
+        if (window.innerWidth <= 1440) {
+            mymap.fitBounds(msaData.shape.getBounds(), {
+                paddingTopLeft: [0,300]
+            });    
+        } else {
             mymap.fitBounds(msaData.shape.getBounds());
+        }
+
     }   
     );  
 }
@@ -225,7 +243,8 @@ function handleAcsStats(geoid) {
             topIndustries(industries);
         })
         .catch(error => {
-            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+            console.log(error.message);
+            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handleAcsStats ran');
 }
@@ -251,12 +270,11 @@ function handleCbpStats(geoid) {
         })
         .then(responseJson => {
             topBusinesses(responseJson);
-            addStatsToMap();
-            //  renderStatsToPage();
-            
+            addStatsToMap();            
         })
         .catch(error => {
-            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+            console.log(error.message);
+            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handlCbpStats ran');
 }
@@ -284,7 +302,8 @@ function handlePepStats(geoid) {
             calcPopStats(responseJson);
         })
         .catch(error => {
-            $('#js-error-message').text(`Something went wrong: ${error.message}`);
+            console.log(error.message);
+            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handlPepStats ran');
 
@@ -389,14 +408,14 @@ function addStatsToMap() {
         <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
         <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
         <li>Median income: $${msaData.stats.medianIncome}</li>
-        <li>Top three industries:
+        <li>Top three sectors:
             <ul>
                 <li>${msaData.stats.topThreeIndustries[0].industry}: ${msaData.stats.topThreeIndustries[0].population}%</li>
                 <li>${msaData.stats.topThreeIndustries[1].industry}: ${msaData.stats.topThreeIndustries[1].population}%</li>
                 <li>${msaData.stats.topThreeIndustries[2].industry}: ${msaData.stats.topThreeIndustries[2].population}%</li>
             </ul>
         </li>
-        <li>Top three business types:
+        <li>Top three sub-sectors:
             <ul>
                 <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}</li>
                 <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}</li>
@@ -412,45 +431,12 @@ function addStatsToMap() {
         </li>
     </ul>    
     `, {
-        maxWidth:250,
-        maxHeight:250
+        maxWidth:200,
+        maxHeight:250,
+        className:'statsPopup'
     }).openPopup();
 }
-/*
-function renderStatsToPage() {
-    $('#js-stats').append(
-    `
-    <h3>${msaData.stats.msaName}</h3>
-    <ul>
-        <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
-        <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
-        <li>Median income: $${msaData.stats.medianIncome}</li>
-        <li>Top three industries:
-            <ul>
-                <li>${msaData.stats.topThreeIndustries[0].industry}: ${msaData.stats.topThreeIndustries[0].population}%</li>
-                <li>${msaData.stats.topThreeIndustries[1].industry}: ${msaData.stats.topThreeIndustries[1].population}%</li>
-                <li>${msaData.stats.topThreeIndustries[2].industry}: ${msaData.stats.topThreeIndustries[2].population}%</li>
-            </ul>
-        </li>
-        <li>Top three business types:
-            <ul>
-                <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}</li>
-                <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}</li>
-                <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}</li>
-            </ul>
-        </li>
-        <li>Top three occupation types:
-            <ul>
-                <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
-                <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
-                <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
-            </ul>
-        </li>
-    </ul>
-    `
-    );
-}
-*/
+
 function handleSearch() {
     onMapLoad();
     handleMapResize();
