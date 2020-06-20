@@ -8,4 +8,6 @@ This app focuses on discovering details about metropolitan statistical areas, wh
 
 There are 392 (as of 2020) MSAs in the United states, and you can explore key statistical information about each of them with this app.
 
+Project board: https://github.com/users/bradrivenburgh/projects/1
+
 Checkout the [live app](https://bradrivenburgh.github.io/rei-search/)
