@@ -102,6 +102,7 @@ function handleUserLocation() {
         let zipcode = $('#js-zipcode').val();
         let city = $('#js-city').val();
         $('#js-form')[0].reset();
+        hideInstructions();
 
         if (zipcode.length > 0) {
             coordinatesLookup(zipcode);
@@ -112,6 +113,10 @@ function handleUserLocation() {
 
         }
     });
+}
+
+function hideInstructions() {
+    $('#js-instructions').empty();
 }
 
 function formatQueryParams(params) {
