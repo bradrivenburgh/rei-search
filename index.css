@@ -16,12 +16,6 @@ html, body, #mapid {
 }
 
 .wrapper {
-    /*
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    */
     position: fixed;
     top: 10px;
     width: 100%;

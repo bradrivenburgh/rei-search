@@ -17,23 +17,25 @@
     <!-- Custom CSS -->
     <link href="index.css" rel="stylesheet" type="text/css">
 
-    <!--Leaflet JS for map-->
+    <!--LeafletJS library for map-->
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
     integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
     crossorigin=""></script>
 
-    <!--Census City SDK for map-->
+    <!--Census citySDK library for map-->
     <script src="./citysdk.js"></script>
-
 </head>
 
 <body>
+
     <div class="wrapper">
-        <main>   
+
+        <main>
+
             <header>
                 <h1>rei-search</h1>
             </header>
-    
+
             <form method="POST" action="" id="js-form">
                 <label for="location">Enter a zip code</label>
                 <input type="text" name="location" id="js-zipcode" placeholder="19103" pattern="(\d{5}([\-]\d{4})?)">
@@ -43,9 +45,21 @@
                 <input type="submit" id="js-submit" value="submit">
             </form>
 
-            <div id="js-error-message"></div>
+            <section id="js-instructions" class="modal">
+                <div class="modal-content">
+                    <h2>Who's this app for?</h2>
+        
+                    <p>Real estate investment decisions should always begin with proper due diligence.</p>
+                
+                    <p>This app is meant to be used by investors to discover and evaluate key statistics about the population and economy of metropolitan statistical areas (MSAs) in the United States, which are geographic regions centered around areas of high population density (i.e., big cities) with integrated economies, in the geography you wish to invest.</p>
+                    
+                </div>
+            </section>
+        
         </main>
+
     </div>
+    
     <!--Map-->
     <div id="mapid"></div>
 
