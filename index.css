@@ -116,7 +116,7 @@ form p {
 
     @keyframes moveToTop {
         0% {top: 50%; margin-top: -134px; max-width: 615px;}
-        100% {top: 10px; margin-top: 0px; margin-left: -307.5px; max-width: 615px;}
+        100% {top: 10px; margin-top: 0px; margin-left: -300px; max-width: 615px;}
     }
 
     header h1 {
