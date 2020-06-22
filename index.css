@@ -1,6 +1,11 @@
 /* Map */
 
+* {
+    box-sizing: border-box;
+}
+
 body {
+    position: relative;
     padding: 0;
     margin: 0;
 }
@@ -11,27 +16,46 @@ html, body, #mapid {
 }
 
 #mapid {
-    position: relative;
+    position: absolute;
     z-index: 1;
 }
 
+/*
 .wrapper {
-    position: fixed;
-    top: 10px;
-    width: 100%;
+    position: absolute;
+    top: 10%;
     z-index: 2;
 }
+*/
 
 main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 65%;
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    margin-left: -150px;
+    top: 50%;
+    margin-top: -250px;
+    width: 300px;
     padding: 10px;
-    margin: 0 auto;
     border-radius: 10px;
     background-color: rgba(228, 215, 215, 0.863);
+    font-size: .9rem;
+}
+
+.moveToTop {
+    animation-name: moveToTop;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes moveToTop {
+    0% {top: 50%; margin-top: -250px; width: 300px;}
+    100% {top: 10px; margin-top: 0px; margin-left: -125px; width: 250px;}
+}
+
+main h2 {
+    text-align: center;
+    font-size: 1.1rem;
 }
 
 header {
@@ -49,9 +73,19 @@ header h1 {
 form {
     display: flex;
     flex-direction: column;
+    align-items: center;
     text-align: center;
 }
-form label, input {
+form input[type=text] {
+    width: 200px;
+    height: 20px;
+}
+form input[type=submit] {
+    width: 75px;
+    height: 30px;
+}
+
+form label, input[type=text] {
     margin-top: .5rem;
 }
 
@@ -59,35 +93,41 @@ form p {
     margin: .5rem 0 0 0;
 }
 
-@media screen and (min-width: 330px) {
-    main {
-        max-width: 55%;
-    }
-}
 
 @media screen and (min-width: 768px) {
     main {
-        max-width: 80%;
+        max-width: 615px;
+        margin-left: -300px;
     }
     header h1 {
         font-size: 2rem;
     }
     form {
         flex-direction: row;
+        justify-content: center;
     }
     form p {
         padding-right: 10px;
     }
 
-    form label, input, p {
+    form label, input[type=text] {
         margin-right: 10px;
     }
-    form input[type=text] {
-        width: 100px;
+
+    form #js-zipcode {
+        width: 75px;
         height: 20px;
     }
+
+    form #js-city {
+        width: 150px;
+        height: 20px;
+    }
+
+
     
 }
+/*
 @media screen and (min-width: 1024px) {
     main {
         max-width: 60%;
@@ -105,3 +145,4 @@ form p {
         max-width: 25%;
     }
 }
+*/

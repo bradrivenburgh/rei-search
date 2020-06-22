@@ -61,7 +61,7 @@ function onMapLoad() {
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: customMaxZoom,
-        minZoom: 2,
+        minZoom: 3,
         //id: 'mapbox/light-v9', //Grayscale
         id: 'mapbox/streets-v11',
         tileSize: 512,
@@ -102,6 +102,7 @@ function handleUserLocation() {
         let zipcode = $('#js-zipcode').val();
         let city = $('#js-city').val();
         $('#js-form')[0].reset();
+        moveControls();
         hideInstructions();
 
         if (zipcode.length > 0) {
@@ -113,6 +114,10 @@ function handleUserLocation() {
 
         }
     });
+}
+
+function moveControls() {
+    $('main').addClass('moveToTop');
 }
 
 function hideInstructions() {
