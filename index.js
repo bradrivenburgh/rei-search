@@ -415,33 +415,55 @@ function topBusinesses(businessType) {
 //Render statistics to map pop-up
 function addStatsToMap() {
     msaData.shape.bindPopup(`
-    <div class='statsPopup'>
-        <h3>${msaData.stats.msaName}</h3>
-        <ul>
-            <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
-            <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
-            <li>Median income: $${msaData.stats.medianIncome}</li>
-            <li>Top three sectors:
-                <ul>
-                    <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}%</li>
-                    <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}%</li>
-                    <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}%</li>
-                </ul>
-            </li>
-            <li>Top three occupation types:
-                <ul>
-                    <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
-                    <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
-                    <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
-                </ul>
-            </li>
-        </ul>
-    <div>    
+    <h3>${msaData.stats.msaName}</h3>
+    <button type="button" class="collapsible">Population growth rate</button>
+    <div class="content">
+      <p>${msaData.stats.popGrowthDeclineRate}%</p>
+    </div>
+    <button type="button" class="collapsible">Price-to-rent ratio</button>
+    <div class="content">
+      <p>${msaData.stats.priceRentRatio}</p>
+    </div>
+    <button type="button" class="collapsible">Median Income</button>
+    <div class="content">
+      <p>$${msaData.stats.medianIncome}</p>
+    </div>
+    <button type="button" class="collapsible">Top three sectors</button>
+    <div class="content">
+      <p>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}%</p>
+      <p>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}%</p>
+      <p>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}%</p>
+    </div>
+    <button type="button" class="collapsible">Top three occupation types</button>
+    <div class="content">
+      <p>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</p>
+      <p>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</p>
+      <p>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</p>
+    </div>
+ 
     `, {
-        maxWidth:200,
+        maxWidth:225,
         maxHeight:250,
         className:'statsPopup'
     }).openPopup();
+
+    collapsibleContent();
+}
+
+function collapsibleContent() {
+    const coll = document.getElementsByClassName("collapsible");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            let content = this.nextElementSibling;
+            if (content.style.display === "block") {
+            content.style.display = "none";
+            } else {
+            content.style.display = "block";
+            }
+        });
+    }
 }
 
 function handleSearch() {
@@ -449,6 +471,7 @@ function handleSearch() {
     handleMapResize();
     handleUserLocation();
     resetApp();
+    collapsibleContent();
 }
 
 //Run app
