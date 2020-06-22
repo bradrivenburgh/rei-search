@@ -34,7 +34,7 @@ let mymap = new L.map('mapid', {
     zoomControl: false,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0
-});
+}).on("popupopen", collapsibleContent);
 
 function onMapLoad() {
     //Position the zoom controls
@@ -287,7 +287,7 @@ function handleCbpStats(geoid) {
             console.log(error.message);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
-        console.log('handlCbpStats ran');
+        console.log('handleCbpStats ran');
 }
 
 
@@ -414,7 +414,7 @@ function topBusinesses(businessType) {
 
 //Render statistics to map pop-up
 function addStatsToMap() {
-    msaData.shape.bindPopup(`
+const popupStats =   msaData.shape.bindPopup(`
     <h3>${msaData.stats.msaName}</h3>
     <button type="button" class="collapsible">Population growth rate</button>
     <div class="content">
@@ -446,8 +446,8 @@ function addStatsToMap() {
         maxHeight:250,
         className:'statsPopup'
     }).openPopup();
-
-    collapsibleContent();
+    
+    console.log('addStatsToMap ran', popupStats);
 }
 
 function collapsibleContent() {
@@ -471,7 +471,6 @@ function handleSearch() {
     handleMapResize();
     handleUserLocation();
     resetApp();
-    collapsibleContent();
 }
 
 //Run app
