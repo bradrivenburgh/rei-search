@@ -10,7 +10,7 @@ body {
     margin: 0;
 }
 
-html, body, #mapid {
+html, body, #mapid, .overlay {
     height: 100%;
     width: 100vw;
 }
@@ -20,36 +20,46 @@ html, body, #mapid {
     z-index: 1;
 }
 
-/*
-.wrapper {
+
+.overlay {
     position: absolute;
-    top: 10%;
     z-index: 2;
+    backdrop-filter: blur(5px);
 }
-*/
 
 main {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     left: 50%;
     margin-left: -150px;
     top: 50%;
-    margin-top: -250px;
-    width: 300px;
+    margin-top: -261px;
+    max-width: 300px;
     padding: 10px;
     border-radius: 10px;
     background-color: rgba(228, 215, 215, 0.863);
     font-size: .9rem;
 }
 
-.moveToTop {
-    animation-name: moveToTop;
-    animation-duration: 1s;
+.removeOverlay {
+    animation-name: removeOverlay;
+    animation-duration: 2s;
     animation-fill-mode: forwards;
 }
 
+.moveToTop {
+    animation-name: moveToTop;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes removeOverlay {
+    0% {z-index: 2; backdrop-filter: blur(5px);}
+    100% {z-index: 0; backdrop-filter: blur(0px);}
+}
+
 @keyframes moveToTop {
-    0% {top: 50%; margin-top: -250px; width: 300px;}
+    0% {top: 50%; margin-top: -261px; width: 300px;}
     100% {top: 10px; margin-top: 0px; margin-left: -125px; width: 250px;}
 }
 
@@ -93,19 +103,31 @@ form p {
     margin: .5rem 0 0 0;
 }
 
+#js-instructions {
+    line-height: 1.5rem;
+}
 
 @media screen and (min-width: 768px) {
     main {
         max-width: 615px;
         margin-left: -300px;
+        margin-top: -134px;
     }
+
+    @keyframes moveToTop {
+        0% {top: 50%; margin-top: -134px; max-width: 615px;}
+        100% {top: 10px; margin-top: 0px; margin-left: -307.5px; max-width: 615px;}
+    }
+
     header h1 {
         font-size: 2rem;
     }
+
     form {
         flex-direction: row;
         justify-content: center;
     }
+
     form p {
         padding-right: 10px;
     }

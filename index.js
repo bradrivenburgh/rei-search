@@ -102,7 +102,7 @@ function handleUserLocation() {
         let zipcode = $('#js-zipcode').val();
         let city = $('#js-city').val();
         $('#js-form')[0].reset();
-        moveControls();
+        introAnimation();
         hideInstructions();
 
         if (zipcode.length > 0) {
@@ -116,8 +116,9 @@ function handleUserLocation() {
     });
 }
 
-function moveControls() {
+function introAnimation() {
     $('main').addClass('moveToTop');
+    $('.overlay').addClass('removeOverlay')
 }
 
 function hideInstructions() {
