@@ -144,11 +144,14 @@ form p {
     form #js-city {
         width: 150px;
         height: 20px;
-    }
-
-
-    
+    }  
 }
+
+.statsPopup {
+    
+
+}
+
 /*
 @media screen and (min-width: 1024px) {
     main {

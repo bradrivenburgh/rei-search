@@ -337,8 +337,9 @@ function calcPopStats(popStats) {
     acc + diff.populationTotal, 0) / popDiff.length;
     console.log(cumulativeGrowthOrDecline, averageTotalPopulation);
     msaData.stats.popGrowthDeclineRate = ( (cumulativeGrowthOrDecline / averageTotalPopulation) * 100 ).toFixed(2);
-        
     console.log(msaData.stats.popGrowthDeclineRate);
+
+
 }
 
 
@@ -368,7 +369,7 @@ function topOccupationTypes(occupations) {
     console.log('topOccupationTypes ran');
 }
 
-//Determine top 3 industries
+//Determine top 3 industries -- may take this out
 function topIndustries(industries) {
     const labeledIndustries = [
         {industry:'Agriculture, forestry, fishing and hunting, and mining', population: 0},
@@ -403,7 +404,7 @@ function topBusinesses(businessType) {
         msaData.stats.topThreeBusinessTypes.push(
             {
                 businessType: sortedBusinessTypes[i][0],
-                employees: sortedBusinessTypes[i][4]
+                employees: ( ( parseInt(sortedBusinessTypes[i][4]) / parseInt( businessType[1][4] ) )*100).toFixed(2)
             }
         );
     }
@@ -414,33 +415,28 @@ function topBusinesses(businessType) {
 //Render statistics to map pop-up
 function addStatsToMap() {
     msaData.shape.bindPopup(`
-    <h4>${msaData.stats.msaName}</h4>
-    <ul>
-        <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
-        <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
-        <li>Median income: $${msaData.stats.medianIncome}</li>
-        <li>Top three sectors:
-            <ul>
-                <li>${msaData.stats.topThreeIndustries[0].industry}: ${msaData.stats.topThreeIndustries[0].population}%</li>
-                <li>${msaData.stats.topThreeIndustries[1].industry}: ${msaData.stats.topThreeIndustries[1].population}%</li>
-                <li>${msaData.stats.topThreeIndustries[2].industry}: ${msaData.stats.topThreeIndustries[2].population}%</li>
-            </ul>
-        </li>
-        <li>Top three sub-sectors:
-            <ul>
-                <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}</li>
-                <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}</li>
-                <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}</li>
-            </ul>
-        </li>
-        <li>Top three occupation types:
-            <ul>
-                <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
-                <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
-                <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
-            </ul>
-        </li>
-    </ul>    
+    <div class='statsPopup'>
+        <h3>${msaData.stats.msaName}</h3>
+        <ul>
+            <li>Population growth rate: ${msaData.stats.popGrowthDeclineRate}%</li>
+            <li>Price-to-rent ratio: ${msaData.stats.priceRentRatio}</li>
+            <li>Median income: $${msaData.stats.medianIncome}</li>
+            <li>Top three sectors:
+                <ul>
+                    <li>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}%</li>
+                    <li>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}%</li>
+                    <li>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}%</li>
+                </ul>
+            </li>
+            <li>Top three occupation types:
+                <ul>
+                    <li>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</li>
+                    <li>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</li>
+                    <li>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</li>
+                </ul>
+            </li>
+        </ul>
+    <div>    
     `, {
         maxWidth:200,
         maxHeight:250,
