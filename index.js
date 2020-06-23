@@ -59,7 +59,7 @@ function onMapLoad() {
     }
     mymap.setView([37.828, -96.9], resetZoom);
 
-    //Set the base tile layer to OpenStreetMap -- first API call (MapBox static tiles API)
+    //Set the base tile layer
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: customMaxZoom,
@@ -122,7 +122,7 @@ function formatQueryParams(params) {
     return queryItems.join('&');
 }
 
-//Retrieve coordinates from MapBox -- second API call (MapBox Geocoding API)
+//Retrieve coordinates from MapBox
 function coordinatesLookup(userLocation) {
     const mapBoxAccessToken = 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g';
     const endPointURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLocation}.json`;
@@ -154,7 +154,7 @@ function coordinatesLookup(userLocation) {
 }
 
 //Determine MSA based on coordinates and render geoJSON shape
-//to map with citySDK -- third API call (census geocoder API via citySDK)
+//to map with citySDK
 function addMSAToMap(lng, lat) {
     census(
     {
@@ -282,7 +282,7 @@ function handleCbpStats(geoid) {
 }
 
 
-//Retrieve statistics from the pep endpoint
+//Retrieve time series statistics from the pep endpoint
 function handlePepStats(geoid) {
     const endPointURL = `https://api.census.gov/data/2019/pep/population`;
     const variables = 'get=DATE_CODE,DATE_DESC,POP';
@@ -310,7 +310,7 @@ function handlePepStats(geoid) {
         });
 }
 
-//Calculate, and store population growth/decline stats
+//Calculate and store population growth/decline stats
 function calcPopStats(popStats) {
     const popDiff = [];
     for (let i = 3; i < popStats.length -1; i++) {
@@ -329,12 +329,12 @@ function calcPopStats(popStats) {
 }
 
 
-//Calculate price-to-rent ratio
+//Calculate and store price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
     msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
 }
 
-//Determine top 3 occupation types
+//Determine and store top 3 occupation types
 function topOccupationTypes(occupations) {
     const labeledOccupations = [
         {occupation:'Management, business, science, and arts occupations', population: 0},
@@ -352,6 +352,8 @@ function topOccupationTypes(occupations) {
         msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
     }
 }
+
+//Determine and store top businesses/employers
 function topBusinesses(businessType) {
     const sortedBusinessTypes = businessType.sort( (a, b) => b[4] - a[4]);
     msaData.stats.topThreeBusinessTypes = [];
@@ -365,7 +367,7 @@ function topBusinesses(businessType) {
     }
 }
 
-//Render statistics to map pop-up
+//Add statistics to map vis a leaflet popup
 function addStatsToMap() {
     let maxWidth, maxHeight;
     if (window.innerWidth >= 768) {
@@ -416,7 +418,7 @@ function addStatsToMap() {
 
 //Make stats in popup collapsible
 function collapsibleContent() {
-    //Create an array with child elements with class 'collapsible'
+    //Create a collection of child elements of class 'collapsible'
     const coll = document.getElementsByClassName('collapsible');
 
     //Loop through coll adding a 'click' event listener that
