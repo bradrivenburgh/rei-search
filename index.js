@@ -55,7 +55,7 @@ function onMapLoad() {
         customMaxZoom = 14;
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
-        customMaxZoom = 18;
+        customMaxZoom = 16;
     }
     mymap.setView([37.828, -96.9], resetZoom);
 
@@ -174,7 +174,6 @@ function addMSAToMap(lng, lat) {
     },
     (error, response) => {
         if (error) {
-            mymap.setView([37.828, -96.9], 3);
             resetApp();
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.notFound).openOn(mymap);
@@ -435,7 +434,7 @@ function addStatsToMap() {
         <p><em>(Lower is better)</em></p>
         <p>${msaData.stats.priceRentRatio}</p>
     </div>
-    <button type="button" class="collapsible">Median Income</button>
+    <button type="button" class="collapsible">Median income</button>
     <div class="content">
         <p>$${msaData.stats.medianIncome}</p>
     </div>
