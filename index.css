@@ -1,10 +1,13 @@
-/* Map */
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno&family=Open+Sans&display=swap');
 
 * {
     box-sizing: border-box;
 }
 
 body {
+    font-family: 'Open Sans', sans-serif;
     position: relative;
     padding: 0;
     margin: 0;
@@ -15,11 +18,14 @@ html, body, #mapid, .overlay {
     width: 100vw;
 }
 
+/* Map */
+
 #mapid {
     position: absolute;
     z-index: 1;
 }
 
+/* Blurred Overlay */
 
 .overlay {
     position: absolute;
@@ -27,19 +33,23 @@ html, body, #mapid, .overlay {
     backdrop-filter: blur(5px);
 }
 
+/* Form / Instructions */
+
 main {
     position: absolute;
     z-index: 3;
     left: 50%;
     margin-left: -150px;
     top: 50%;
-    margin-top: -261px;
+    margin-top: -278px;
     max-width: 300px;
     padding: 10px;
     border-radius: 10px;
     background-color: rgba(228, 215, 215, 0.863);
     font-size: .9rem;
 }
+
+/* Animations */
 
 .removeOverlay {
     animation-name: removeOverlay;
@@ -63,10 +73,7 @@ main {
     100% {top: 10px; margin-top: 0px; margin-left: -125px; width: 250px;}
 }
 
-main h2 {
-    text-align: center;
-    font-size: 1.1rem;
-}
+/* Header */
 
 header {
     text-align: center;
@@ -75,10 +82,13 @@ header {
 }
 
 header h1 {
+    font-family: 'MuseoModerno', cursive;
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 1.5rem;
+    font-size: 2rem;
 }
+
+/* Form */
 
 form {
     display: flex;
@@ -90,7 +100,7 @@ form input[type=text] {
     width: 200px;
     height: 20px;
 }
-form input[type=submit] {
+#js-submit {
     width: 75px;
     height: 30px;
 }
@@ -103,20 +113,63 @@ form p {
     margin: .5rem 0 0 0;
 }
 
+/* Instructions */
+
+main h2 {
+    text-align: center;
+    font-size: 1.1rem;
+}
+
 #js-instructions {
     line-height: 1.5rem;
 }
 
+/* Statistics Popup Styles */
+
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  
+  .active, .collapsible:hover, .collapsible:focus {
+    background-color: #555;
+  }
+  
+  h3 {
+      font-size: 1rem;
+  }
+
+  .content {
+    padding: 0 18px;
+    font-size: 13px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }
+
+  .content p {
+      margin: .8rem 0;
+  }
+
+/* Media queries */
+
 @media screen and (min-width: 768px) {
     main {
-        max-width: 615px;
-        margin-left: -300px;
+        max-width: 650px;
+        margin-left: -325px;
         margin-top: -134px;
     }
 
     @keyframes moveToTop {
-        0% {top: 50%; margin-top: -134px; max-width: 615px;}
-        100% {top: 10px; margin-top: 0px; margin-left: -300px; max-width: 615px;}
+        0% {top: 50%; margin-top: -134px;}
+        100% {top: 10px; margin-top: 0px;}
     }
 
     header h1 {
@@ -126,6 +179,7 @@ form p {
     form {
         flex-direction: row;
         justify-content: center;
+        padding-bottom: 5px;
     }
 
     form p {
@@ -136,41 +190,22 @@ form p {
         margin-right: 10px;
     }
 
-    form #js-zipcode {
+    #js-zipcode {
         width: 75px;
         height: 20px;
     }
 
-    form #js-city {
+    #js-city {
         width: 150px;
         height: 20px;
     }  
+
+    #js-submit {
+        margin-top: 10px
+        width: 75px;
+        height: 30px;
+        }
 }
-
-/* Statistics Popup Styles */
-
-.collapsible {
-    background-color: #777;
-    color: white;
-    cursor: pointer;
-    padding: 14px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-  }
-  
-  .active, .collapsible:hover {
-    background-color: #555;
-  }
-  
-  .content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: #f1f1f1;
-  }
 
 /*
 @media screen and (min-width: 1024px) {

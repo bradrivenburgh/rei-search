@@ -3,13 +3,14 @@
 //Census API Key
 const censusKey = '411334e38c7e68a6db0c7768a0a69ff590d3706b';
 
-//Store geoJson, marker, and map stats globally
+//Store geoJson, marker, and MSA stats globally
 const msaData = {
     'shape': '',
     'marker': '',
     'stats': {}
 }
 
+//Create error messages on map
 const errorPopups = {
     notFound: `<p>We could not find that location in the U.S.</p>
     <p>Please enter another zip code or city, state</p>`,
@@ -36,6 +37,7 @@ let mymap = new L.map('mapid', {
     maxBoundsViscosity: 1.0
 }).on("popupopen", collapsibleContent);
 
+//Load MapBox tiles and set zoom
 function onMapLoad() {
     //Position the zoom controls
     L.control.zoom({
@@ -47,10 +49,10 @@ function onMapLoad() {
 
     if (window.innerWidth < 768) {
         resetZoom = 3;
-        customMaxZoom = 10;
+        customMaxZoom = 12;
     } else if (window.innerWidth >= 768 && screen.width < 1440) {
         resetZoom = 4;
-        customMaxZoom = 12;
+        customMaxZoom = 14;
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
         customMaxZoom = 18;
@@ -62,7 +64,6 @@ function onMapLoad() {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: customMaxZoom,
         minZoom: 3,
-        //id: 'mapbox/light-v9', //Grayscale
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
@@ -73,19 +74,7 @@ function onMapLoad() {
 //Call map tiles and zoom reset when map loads
 mymap.on('load', onMapLoad);
 
-// Adjust map zoom level if window is resized
-function handleMapResize() {    
-    window.onresize = () => {
-        if (window.innerWidth < 768) {
-            mymap.setZoom(3);
-        } else if (window.innerWidth >= 768 && window.innerWidth < 1440) {
-            mymap.setZoom(4);
-        } else if (window.innerWidth >= 1440) {
-            mymap.setZoom(5);
-        }
-    }
-}
-
+// Remove marker and geoJson shape with each new search
 function resetApp() {
     $('#js-submit').on('click', () => {
         if (msaData.shape._leaflet_id) {
@@ -110,17 +99,19 @@ function handleUserLocation() {
         } else if (zipcode.length === 0 && city.length > 0) {
             coordinatesLookup(city);
         } else {
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
 
         }
     });
 }
-
+//Run intro animations
 function introAnimation() {
     $('main').addClass('moveToTop');
-    $('.overlay').addClass('removeOverlay')
+    $('.overlay').addClass('removeOverlay');
 }
 
+//Clear instructions after first search
 function hideInstructions() {
     $('#js-instructions').empty();
 }
@@ -157,6 +148,7 @@ function coordinatesLookup(userLocation) {
         })
         .catch(error => {
             console.log(error.message);
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
 }
@@ -184,6 +176,7 @@ function addMSAToMap(lng, lat) {
         if (error) {
             mymap.setView([37.828, -96.9], 3);
             resetApp();
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.notFound).openOn(mymap);
             
             return error;
@@ -255,6 +248,7 @@ function handleAcsStats(geoid) {
         })
         .catch(error => {
             console.log(error.message);
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handleAcsStats ran');
@@ -285,6 +279,7 @@ function handleCbpStats(geoid) {
         })
         .catch(error => {
             console.log(error.message);
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handleCbpStats ran');
@@ -314,6 +309,7 @@ function handlePepStats(geoid) {
         })
         .catch(error => {
             console.log(error.message);
+            mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
         console.log('handlPepStats ran');
@@ -411,7 +407,6 @@ function topBusinesses(businessType) {
     console.log('topBusinesses ran');
 }
 
-
 //Render statistics to map pop-up
 function addStatsToMap() {
 const popupStats =   msaData.shape.bindPopup(`
@@ -443,8 +438,7 @@ const popupStats =   msaData.shape.bindPopup(`
  
     `, {
         maxWidth:225,
-        maxHeight:250,
-        className:'statsPopup'
+        maxHeight:250
     }).openPopup();
     
     console.log('addStatsToMap ran', popupStats);
@@ -468,7 +462,6 @@ function collapsibleContent() {
 
 function handleSearch() {
     onMapLoad();
-    handleMapResize();
     handleUserLocation();
     resetApp();
 }
