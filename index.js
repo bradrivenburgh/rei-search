@@ -243,7 +243,6 @@ function handleAcsStats(geoid) {
             }
             topOccupationTypes(occupations);
             calcPriceToRent(medianPriceRent);
-            topIndustries(industries);
         })
         .catch(error => {
             console.log(error.message);
@@ -353,35 +352,6 @@ function topOccupationTypes(occupations) {
         msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
     }
 }
-
-//Determine top 3 industries -- may take this out
-function topIndustries(industries) {
-    const labeledIndustries = [
-        {industry:'Agriculture, forestry, fishing and hunting, and mining', population: 0},
-        {industry: 'Construction', population: 0},
-        {industry: 'Manufacturing', population: 0},
-        {industry: 'Wholesale trade', population: 0},
-        {industry: 'Retail trade', population: 0},
-        {industry: 'Transportation and warehousing, and utilities', population: 0},
-        {industry: 'Information', population: 0},
-        {industry: 'Finance and insurance, and real estate and rental and leasing', population: 0},
-        {industry: 'Professional, scientific, and management, and administrative and waste management services', population: 0},
-        {industry: 'Educational services, and health care and social assistance', population: 0},
-        {industry: 'Arts, entertainment, and recreation, and accommodation and food services', population: 0},
-        {industry: 'Other services, except public administration', population: 0},
-        {industry: 'Public administration', population: 0}
-    ];
-    for (let i = 0; i < industries.length; i++) {
-        labeledIndustries[i].population = industries[i];
-    }
-    let sortedIndustries = labeledIndustries.sort( (a, b) => b.population - a.population );
-    msaData.stats.topThreeIndustries = [];
-    for (let i = 0; i < 3; i++) {
-        msaData.stats.topThreeIndustries.push(sortedIndustries[i]);
-    }
-    console.log('topIndustries ran');
-}
-
 function topBusinesses(businessType) {
     const sortedBusinessTypes = businessType.sort( (a, b) => b[4] - a[4]);
     msaData.stats.topThreeBusinessTypes = [];
@@ -444,17 +414,24 @@ function addStatsToMap() {
     `, popupSize).openPopup();    
 }
 
+//Make stats in popup collapsible
 function collapsibleContent() {
-    const coll = document.getElementsByClassName("collapsible");
+    //Create an array with child elements with class 'collapsible'
+    const coll = document.getElementsByClassName('collapsible');
 
+    //Loop through coll adding a 'click' event listener that
+    //toggles the 'active' class, establishes the content
+    //to be displayed as the div immediately following
+    //the button, and alternately sets the display of the div to
+    //'block' or 'none' to expand or collapse the content.
     for (let i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-            this.classList.toggle("active");
+        coll[i].addEventListener('click', function() {
+            this.classList.toggle('active');
             let content = this.nextElementSibling;
-            if (content.style.display === "block") {
-            content.style.display = "none";
+            if (content.style.display === 'block') {
+            content.style.display = 'none';
             } else {
-            content.style.display = "block";
+            content.style.display = 'block';
             }
         });
     }
