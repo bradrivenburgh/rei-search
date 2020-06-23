@@ -35,7 +35,7 @@ let mymap = new L.map('mapid', {
     zoomControl: false,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0
-}).on("popupopen", collapsibleContent);
+}).on('popupopen', collapsibleContent);
 
 //Load MapBox tiles and set zoom
 function onMapLoad() {

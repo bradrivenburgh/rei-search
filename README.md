@@ -19,7 +19,7 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 ### Get key statistics 
 ![Zoomed out view of MSA with statistics showing](images/screenshots/rei-search-map-with-stats.png)
 
-## Technologies Used
+## Technologies used
 - HTML
 - CSS
 - JavaScript
