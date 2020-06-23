@@ -250,7 +250,6 @@ function handleAcsStats(geoid) {
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
-        console.log('handleAcsStats ran');
 }
 
 //Retrieve statistics from the cbp endpoint
@@ -281,7 +280,6 @@ function handleCbpStats(geoid) {
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
-        console.log('handleCbpStats ran');
 }
 
 
@@ -311,8 +309,6 @@ function handlePepStats(geoid) {
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
-        console.log('handlPepStats ran');
-
 }
 
 //Calculate, and store population growth/decline stats
@@ -330,18 +326,13 @@ function calcPopStats(popStats) {
     acc + diff.growthOrDecline, 0);
     const averageTotalPopulation = popDiff.reduce ( (acc, diff) => 
     acc + diff.populationTotal, 0) / popDiff.length;
-    console.log(cumulativeGrowthOrDecline, averageTotalPopulation);
     msaData.stats.popGrowthDeclineRate = ( (cumulativeGrowthOrDecline / averageTotalPopulation) * 100 ).toFixed(2);
-    console.log(msaData.stats.popGrowthDeclineRate);
-
-
 }
 
 
 //Calculate price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
     msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
-    console.log('calcPriceToRent ran');
 }
 
 //Determine top 3 occupation types
@@ -361,7 +352,6 @@ function topOccupationTypes(occupations) {
     for (let i = 0; i < 3; i++) {
         msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
     }
-    console.log('topOccupationTypes ran');
 }
 
 //Determine top 3 industries -- may take this out
@@ -403,7 +393,6 @@ function topBusinesses(businessType) {
             }
         );
     }
-    console.log('topBusinesses ran');
 }
 
 //Render statistics to map pop-up

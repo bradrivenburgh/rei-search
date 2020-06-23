@@ -117,7 +117,7 @@ form {
     border-radius:0.3em;
     box-sizing: border-box;
     text-decoration:none;
-    font-family:'Roboto',sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-weight:300;
     color:#000;
     text-align:center;
@@ -151,6 +151,28 @@ main h2 {
 #js-instructions {
     line-height: 1.5rem;
 }
+
+/* Popup font */
+
+.leaflet-popup-content-wrapper {
+    font-family: 'Open Sans', sans-serif;
+    color: black;
+}
+
+/* Error Popup */
+
+.errorMessage {
+    font-size: .9rem;
+}
+
+.errorMessage .leaflet-popup-content-wrapper {
+    background-color: rgb(245, 207, 207);
+}
+
+.errorMessage .leaflet-popup-tip {
+    background-color: rgb(245, 207, 207);
+}
+
 
 /* Statistics Popup Styles */
 
@@ -186,9 +208,9 @@ main h2 {
       margin: .8rem 0;
   }
 
-/* Media queries */
+/* Media query for larger screens */
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
     main {
         max-width: 650px;
         margin-left: -325px;
@@ -232,23 +254,3 @@ main h2 {
         margin-top: 12px;
     }
 }
-
-/*
-@media screen and (min-width: 1024px) {
-    main {
-        max-width: 60%;
-    }
-}
-
-@media screen and (min-width: 1440px) {
-    main {
-        max-width: 43%;
-    }
-}
-
-@media screen and (min-width: 2560px) {
-    main {
-        max-width: 25%;
-    }
-}
-*/
