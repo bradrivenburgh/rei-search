@@ -10,12 +10,14 @@ This app focuses on discovering details about metropolitan statistical areas (MS
 There are 392 (as of 2020) MSAs in the United states, and you can explore key statistical information about each of them with this app.
 
 ## Screenshots
-
 ### Landing screen
+![Landing screen](images/screenshots/rei-search-landing.png)
 
 ### Discover and explore MSAs
+![Close up view of MSA boundary and geography](images/screenshots/rei-search-close-up-map.png)
 
 ### Get key statistics 
+![Zoomed out view of MSA with statistics showing](images/screenshots/rei-search-map-with-stats.png)
 
 ## Technologies Used
 - HTML
