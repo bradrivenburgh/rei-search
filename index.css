@@ -124,6 +124,12 @@ form {
     transition: all 0.2s;
 }
 
+@-moz-document url-prefix() {
+    #js-submit {
+        margin-top: 1em;
+    }
+}
+
 #js-submit:hover{
     color:#000000;
     background-color:#FFFFFF;
