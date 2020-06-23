@@ -33,7 +33,7 @@ html, body, #mapid, .overlay {
     backdrop-filter: blur(5px);
 }
 
-/* Form / Instructions */
+/* Header / Form / Instructions layout */
 
 main {
     position: absolute;
@@ -152,14 +152,14 @@ main h2 {
     line-height: 1.5rem;
 }
 
-/* Popup font */
+/* Map popup font */
 
 .leaflet-popup-content-wrapper {
     font-family: 'Open Sans', sans-serif;
     color: black;
 }
 
-/* Error Popup */
+/* Map error popup */
 
 .errorMessage {
     font-size: .9rem;
@@ -174,7 +174,7 @@ main h2 {
 }
 
 
-/* Statistics Popup Styles */
+/* Map statistics popup styles */
 
 .collapsible {
     background-color: #777;
