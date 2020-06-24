@@ -30,7 +30,15 @@ html, body, #mapid, .overlay {
 .overlay {
     position: absolute;
     z-index: 2;
-    backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, .9);
+}    
+
+@supports (backdrop-filter: blur(5px)) {
+    .overlay {
+        position: absolute;
+        z-index: 2;
+        backdrop-filter: blur(5px);
+    }    
 }
 
 /* Header / Form / Instructions layout */
@@ -159,13 +167,12 @@ main h2 {
 
 /* Map zoom controls */
 .leaflet-bar {
-    border: 1px solid black;
-    box-shadow: none;
 }
 
-/* .leaflet-bar a {
-    background-color: rgba(228, 215, 215);
-} */
+.leaflet-bar a {
+    background-color: #777;
+    color: white;
+} 
 
 /* Map popup font */
 
