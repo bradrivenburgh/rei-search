@@ -158,10 +158,14 @@ main h2 {
 }
 
 /* Map zoom controls */
+.leaflet-bar {
+    border: 1px solid black;
+    box-shadow: none;
+}
 
-.leaflet-bar a {
+/* .leaflet-bar a {
     background-color: rgba(228, 215, 215);
-  }
+} */
 
 /* Map popup font */
 
