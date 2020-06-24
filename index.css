@@ -157,6 +157,15 @@ main h2 {
     line-height: 1.5rem;
 }
 
+/* Map zoom controls */
+
+.leaflet-bar{
+}
+
+.leaflet-bar a{
+    background-color: #C8D5E2;
+  }
+
 /* Map popup font */
 
 .leaflet-popup-content-wrapper {
