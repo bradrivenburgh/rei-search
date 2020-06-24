@@ -147,7 +147,6 @@ function coordinatesLookup(userLocation) {
             addMarkerToMap(lng, lat);
         })
         .catch(error => {
-            console.log(error.message);
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
@@ -234,18 +233,16 @@ function handleAcsStats(geoid) {
             const occupations = [];
             const industries = [];
             const medianPriceRent = [];
-            for (let i = 0; i < responseJson[0].length; i++) {
+            for (let i = 0; i < responseJson[0].length -1; i++) {
                 i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
                 i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
                 i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][i] ) :
-                i < 21 ? medianPriceRent.push( parseInt(responseJson[1][i]) ) : 
-                console.log('Finished gathering acs1 stats');
+                medianPriceRent.push( parseInt(responseJson[1][i]) );
             }
             topOccupationTypes(occupations);
             calcPriceToRent(medianPriceRent);
         })
         .catch(error => {
-            console.log(error.message);
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
@@ -275,7 +272,6 @@ function handleCbpStats(geoid) {
             addStatsToMap();            
         })
         .catch(error => {
-            console.log(error.message);
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
@@ -304,7 +300,6 @@ function handlePepStats(geoid) {
             calcPopStats(responseJson);
         })
         .catch(error => {
-            console.log(error.message);
             mymap.setView([37.828, -96.9], 3);
             errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
         });
