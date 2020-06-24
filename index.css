@@ -166,13 +166,10 @@ main h2 {
 }
 
 /* Map zoom controls */
-.leaflet-bar {
-}
 
-.leaflet-bar a {
-    background-color: #555;
-    color: white;
-} 
+.leaflet-bar a.leaflet-disabled {
+    color: rgb(90, 90, 90);
+}
 
 /* Map popup font */
 
