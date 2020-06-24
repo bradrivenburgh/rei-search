@@ -159,8 +159,8 @@ main h2 {
 
 /* Map zoom controls */
 
-.leaflet-bar a{
-    background-color: #C8D5E2;
+.leaflet-bar a {
+    background-color: rgba(228, 215, 215);
   }
 
 /* Map popup font */
