@@ -47,10 +47,10 @@ function onMapLoad() {
     //Set initial zoom for small, medium and large screens
     let resetZoom, customMaxZoom;
 
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 700) {
         resetZoom = 3;
         customMaxZoom = 12;
-    } else if (window.innerWidth >= 768 && screen.width < 1440) {
+    } else if (window.innerWidth >= 700 && screen.width < 1440) {
         resetZoom = 4;
         customMaxZoom = 14;
     } else if (window.innerWidth >= 1440) {
@@ -169,7 +169,7 @@ function addMSAToMap(lng, lat) {
         values: [ 
         'EMP'
         ],
-        statsKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b'
+        statsKey: censusKey
     },
     (error, response) => {
         if (error) {
@@ -365,7 +365,7 @@ function topBusinesses(businessType) {
 //Add statistics to map vis a leaflet popup
 function addStatsToMap() {
     let maxWidth, maxHeight;
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= 700) {
         maxWidth = 350;
         maxHeight = 350;
     } else {
