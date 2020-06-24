@@ -362,23 +362,8 @@ function topBusinesses(businessType) {
     }
 }
 
-//Add statistics to map vis a leaflet popup
-function addStatsToMap() {
-    let maxWidth, maxHeight;
-    if (window.innerWidth >= 700) {
-        maxWidth = 350;
-        maxHeight = 350;
-    } else {
-        maxWidth = 225;
-        maxHeight = 250;
-    }
-
-    const popupSize = {
-        maxWidth: maxWidth,
-        maxHeight: maxHeight
-    }
-
-    msaData.shape.bindPopup(`
+function templateStatistics() {
+    const statistics = `
     <h3>${msaData.stats.msaName}</h3>
     <button type="button" class="collapsible">Population growth rate</button>
     <div class="content">
@@ -408,7 +393,28 @@ function addStatsToMap() {
         <p>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</p>
         <p>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</p>
     </div>
-    `, popupSize).openPopup();    
+    `;
+    return statistics;
+}
+
+//Add statistics to map vis a leaflet popup
+function addStatsToMap() {
+    let maxWidth, maxHeight;
+    
+    if (window.innerWidth >= 700) {
+        maxWidth = 350;
+        maxHeight = 350;
+    } else {
+        maxWidth = 225;
+        maxHeight = 250;
+    }
+
+    const popupSize = {
+        maxWidth: maxWidth,
+        maxHeight: maxHeight
+    }
+
+    msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();    
 }
 
 //Make stats in popup collapsible
