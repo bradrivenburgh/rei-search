@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
+    <!--It is necessary to prevent user from resizing document for the map to work properly-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <title>rei-search</title>
@@ -41,11 +42,11 @@
             <h1>rei-search</h1>
         </header>
 
-        <form method="POST" action="" id="js-form">
-            <label for="location">Enter a zip code</label>
+        <form method="POST" action="#" id="js-form">
+            <label for="js-zipcode">Enter a zip code</label>
             <input type="text" name="location" id="js-zipcode" placeholder="19103" onfocus="this.placeholder =''" onblur="this.placeholder = '19103'" pattern="(\d{5}([\-]\d{4})?)">
             <p>or</p>
-            <label for="location">Enter a city and state</label>
+            <label for="js-city">Enter a city and state</label>
             <input type="text" name="location" id="js-city" placeholder="philadelphia, pa" onfocus="this.placeholder =''" onblur="this.placeholder = 'philadelphia, pa'" pattern="([A-Za-z]+\s?)+,\s?[A-Za-z]{2,}"><br>
             <input type="submit" id="js-submit" value="submit">
         </form>

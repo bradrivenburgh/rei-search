@@ -111,9 +111,9 @@ function introAnimation() {
     $('.overlay').addClass('removeOverlay');
 }
 
-//Clear instructions after first search
+//Remove instructions after first search
 function hideInstructions() {
-    $('#js-instructions').empty();
+    $('#js-instructions').remove();
 }
 
 function formatQueryParams(params) {
