@@ -203,14 +203,15 @@ function addMSAToMap(lng, lat) {
                 paddingTopLeft: [40,500]
             });    
         }
-        if (window.innerWidth <= 1440) {
+        if (window.innerWidth < 2560) {
             STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds(), {
                 paddingTopLeft: [0,400]
             });    
         } else {
-            STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds());
+            STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds(), {
+                paddingTopLeft: [0,100]
+            });    
         }
-
     }   
     );  
 }
