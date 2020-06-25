@@ -400,7 +400,7 @@ function templateStatistics() {
 //Add statistics to map vis a leaflet popup
 function addStatsToMap() {
     let maxWidth, maxHeight;
-    
+
     if (window.innerWidth >= 700) {
         maxWidth = 350;
         maxHeight = 350;
@@ -414,7 +414,8 @@ function addStatsToMap() {
         maxHeight: maxHeight
     }
 
-    msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();    
+    msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();
+    msaData.shape.bindPopup(templateStatistics, popupSize); 
 }
 
 //Make stats in popup collapsible
