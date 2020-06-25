@@ -205,7 +205,7 @@ function addMSAToMap(lng, lat) {
         }
         if (window.innerWidth <= 1440) {
             STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds(), {
-                paddingTopLeft: [0,300]
+                paddingTopLeft: [0,400]
             });    
         } else {
             STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds());
