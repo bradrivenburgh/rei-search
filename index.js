@@ -436,6 +436,7 @@ function addStatsToMap() {
 function addHamburgerButton() {
     $('header').append(`
     <button type="button" value="form" name="hamburger">
+    <span class="hide">Form</span>
     <svg viewBox="0 0 100 80" width="20" height="20">
         <rect width="100" height="20" rx="16"></rect>
         <rect y="30" width="100" height="20" rx="16"></rect>
