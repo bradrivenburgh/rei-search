@@ -433,9 +433,9 @@ function addStatsToMap() {
     STORE.msaData.shape.bindPopup(templateStatistics, popupSize); 
 }
 
-function addButton() {
+function addHamburgerButton() {
     $('header').append(`
-    <button>
+    <button type="button" value="form" name="hamburger">
     <svg viewBox="0 0 100 80" width="20" height="20">
         <rect width="100" height="20" rx="16"></rect>
         <rect y="30" width="100" height="20" rx="16"></rect>
@@ -447,7 +447,7 @@ function addButton() {
 //Make form collapsible for mobile
 function collapseForm() {
     if (window.innerWidth < 700 ) {
-        addButton();
+        addHamburgerButton();
         $('header').addClass('hamburger');
         $('header button').on('click', function() {
             $('#js-form').toggle('slow');
