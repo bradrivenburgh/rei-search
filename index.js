@@ -436,7 +436,6 @@ function collapseForm() {
         $('header').addClass('smallDisplay').attr('role', 'button');
         $('header').on('click', function() {
             $('#js-form').toggle('slow');
-            event.stopPropagation;
         });
     }
 }
