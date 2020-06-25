@@ -106,7 +106,6 @@ function handleUserLocation() {
     } else {
         mymap.setView([37.828, -96.9], 3);
         errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
-
     }
 }
 
@@ -114,7 +113,9 @@ function handleUserLocation() {
 function transitionSearch() {
     introAnimation();
     hideInstructions();
-    $('#js-form').toggle('slow');
+    if (window.innerWidth < 700 ) {
+        $('#js-form').toggle('slow');
+    }
 }
 
 //Run intro animations
@@ -430,11 +431,23 @@ function addStatsToMap() {
     msaData.shape.bindPopup(templateStatistics, popupSize); 
 }
 
+function addButton() {
+    $('header').append(`
+    <button>
+    <svg viewBox="0 0 100 80" width="20" height="20">
+        <rect width="100" height="20" rx="16"></rect>
+        <rect y="30" width="100" height="20" rx="16"></rect>
+        <rect y="60" width="100" height="20" rx="16"></rect>
+    </svg>
+  </button>`);
+}
+
 //Make form collapsible for mobile
 function collapseForm() {
     if (window.innerWidth < 700 ) {
-        $('header').addClass('smallDisplay').attr({'role': 'button', 'tabindex': 0});
-        $('header').on('click', function() {
+        addButton();
+        $('header').addClass('hamburger');
+        $('header button').on('click', function() {
             $('#js-form').toggle('slow');
         });
     }

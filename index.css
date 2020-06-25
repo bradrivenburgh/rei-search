@@ -97,14 +97,38 @@ header h1 {
     font-size: 2rem;
 }
 
-.smallDisplay {
-    cursor: pointer;
+/* Hamburger Menu for small screen */
+
+.hamburger {
+    display: flex;
+    justify-content: center;
+    align-items: center;  
     padding-bottom: .1rem;
 }
 
-.smallDisplay:hover {
-    color: white;
+.hamburger h1 {
+    margin-right: 8px;
 }
+
+.hamburger button {
+    cursor: pointer;
+    margin-top: 3px;
+    padding:0 .3em 0 .3em;
+    border:0.1em solid #000;
+    background-color: #C8D5E2;
+    border:0.1em solid #000;
+    border-radius:0.3em;
+    transition: all 0.2s;
+}
+
+.hamburger button:hover {
+    background-color:#FFFFFF;
+}
+
+.hamburger button svg {
+    margin-top: .22em
+}
+
 
 /* Form */
 
@@ -132,9 +156,8 @@ form {
     background-color: #C8D5E2;
     margin:0 0.3em 0.3em 0;
     border-radius:0.3em;
-    box-sizing: border-box;
     text-decoration:none;
-    font-weight:300;
+    font-weight:600;
     color:#000;
     text-align:center;
     transition: all 0.2s;
@@ -147,7 +170,6 @@ form {
 }
 
 #js-submit:hover{
-    color:#000000;
     background-color:#FFFFFF;
 }
 
