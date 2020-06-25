@@ -1,48 +1,50 @@
 'use strict'
 
-//Census API Key
-const censusKey = '411334e38c7e68a6db0c7768a0a69ff590d3706b';
-
-//Store geoJson, marker, and MSA stats globally
-const msaData = {
-    'shape': '',
-    'marker': '',
-    'stats': {}
+const STORE = {
+    //Census API Key
+    censusKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b',
+    
+    map: {
+        //Boundaries for U.S.
+        bounds: [
+            [75.255846, -179.734770],
+            [-16.190105, -0.222074] 
+        ],
+        //Initialize leaflet map
+        mymap: new L.map('mapid', {
+            center: [37.828, -96.9],
+            zoom: 3,
+            zoomControl: false,
+            maxBounds: this.bounds,
+            maxBoundsViscosity: 1.0
+        }).on('popupopen', collapsibleStats),
+    },
+    //Store geoJson, marker, and MSA stats
+    msaData: {
+        'shape': '',
+        'marker': '',
+        'stats': {}
+    },
+    //Create error messages on map
+    errorPopups: {
+        notFound: `<p>We could not find that location in the U.S.</p>
+        <p>Please enter another zip code or city, state</p>`,
+        emptyForm: `<p>Please enter a zip code or city, state</p>`,
+        errorMessage: `Something went wrong. Please try again.`,
+        createPopup(message) {
+            return L.popup({maxWidth:250, className:'errorMessage'})
+            .setLatLng([37.828, -96.9])
+            .setContent(`${message}`);
+        } 
+    }
 }
-
-//Create error messages on map
-const errorPopups = {
-    notFound: `<p>We could not find that location in the U.S.</p>
-    <p>Please enter another zip code or city, state</p>`,
-    emptyForm: `<p>Please enter a zip code or city, state</p>`,
-    errorMessage: `Something went wrong. Please try again.`,
-    createPopup(message) {
-        return L.popup({maxWidth:250, className:'errorMessage'})
-        .setLatLng([37.828, -96.9])
-        .setContent(`${message}`);
-    } 
-}
-
-//Initialize map with boundaries
-const bounds = [
-    [75.255846, -179.734770],
-    [-16.190105, -0.222074] 
-];
-
-let mymap = new L.map('mapid', {
-    center: [37.828, -96.9],
-    zoom: 3,
-    zoomControl: false,
-    maxBounds: bounds,
-    maxBoundsViscosity: 1.0
-}).on('popupopen', collapsibleStats);
 
 //Load MapBox tiles and set zoom
 function onMapLoad() {
     //Position the zoom controls
     L.control.zoom({
         position: 'bottomright'
-    }).addTo(mymap);
+    }).addTo(STORE.map.mymap);
 
     //Set initial zoom for small, medium and large screens
     let resetZoom, customMaxZoom;
@@ -57,7 +59,7 @@ function onMapLoad() {
         resetZoom = 5;
         customMaxZoom = 16;
     }
-    mymap.setView([37.828, -96.9], resetZoom);
+    STORE.map.mymap.setView([37.828, -96.9], resetZoom);
 
     //Set the base tile layer
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
@@ -68,18 +70,18 @@ function onMapLoad() {
         tileSize: 512,
         zoomOffset: -1,
         accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
-    }).addTo(mymap);
+    }).addTo(STORE.map.mymap);
 }
 
 //Call map tiles and zoom reset when map loads
-mymap.on('load', onMapLoad);
+STORE.map.mymap.on('load', onMapLoad);
 
 // Remove marker and geoJson shape with each new search
 function resetApp() {
     $('#js-submit').on('click', () => {
-        if (msaData.shape._leaflet_id) {
-            mymap.removeLayer(msaData.marker);
-            mymap.removeLayer(msaData.shape);
+        if (STORE.msaData.shape._leaflet_id) {
+            STORE.map.mymap.removeLayer(STORE.msaData.marker);
+            STORE.map.mymap.removeLayer(STORE.msaData.shape);
         }
     });
 }
@@ -104,8 +106,8 @@ function handleUserLocation() {
     } else if (zipcode.length === 0 && city.length > 0) {
         coordinatesLookup(city);
     } else {
-        mymap.setView([37.828, -96.9], 3);
-        errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
+        STORE.map.mymap.setView([37.828, -96.9], 3);
+        STORE.errorPopups.createPopup(STORE.errorPopups.emptyForm).openOn(STORE.map.mymap);
     }
 }
 
@@ -160,8 +162,8 @@ function coordinatesLookup(userLocation) {
             addMarkerToMap(lng, lat);
         })
         .catch(error => {
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
+            STORE.map.mymap.setView([37.828, -96.9], 3);
+            STORE.errorPopups.createPopup(STORE.errorPopups.errorMessage).openOn(STORE.map.mymap);
         });
 }
 
@@ -182,31 +184,31 @@ function addMSAToMap(lng, lat) {
         values: [ 
         'EMP'
         ],
-        statsKey: censusKey
+        statsKey: STORE.censusKey
     },
     (error, response) => {
         if (error) {
             resetApp();
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.notFound).openOn(mymap);
+            STORE.map.mymap.setView([37.828, -96.9], 3);
+            STORE.errorPopups.createPopup(STORE.errorPopups.notFound).openOn(STORE.map.mymap);
             
             return error;
         }
         handleStats(response.features[0].properties.GEOID);
-        msaData.stats.msaName = response.features[0].properties.NAME; 
-        msaData.shape =  L.geoJson(response).addTo(mymap);
+        STORE.msaData.stats.msaName = response.features[0].properties.NAME; 
+        STORE.msaData.shape =  L.geoJson(response).addTo(STORE.map.mymap);
 
         if (window.innerWidth <= 320) {
-            mymap.fitBounds(msaData.shape.getBounds(), {
+            STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds(), {
                 paddingTopLeft: [40,500]
             });    
         }
         if (window.innerWidth <= 1440) {
-            mymap.fitBounds(msaData.shape.getBounds(), {
+            STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds(), {
                 paddingTopLeft: [0,300]
             });    
         } else {
-            mymap.fitBounds(msaData.shape.getBounds());
+            STORE.map.mymap.fitBounds(STORE.msaData.shape.getBounds());
         }
 
     }   
@@ -215,7 +217,7 @@ function addMSAToMap(lng, lat) {
 
 //Render marker indicating user coordinates to map
 function addMarkerToMap(lat, lng) {    
-    msaData.marker = L.marker([lng, lat]).addTo(mymap);
+    STORE.msaData.marker = L.marker([lng, lat]).addTo(STORE.map.mymap);
 }
 
 function handleStats(geoid) {
@@ -230,7 +232,7 @@ function handleAcsStats(geoid) {
     const variables = 'get=CP03_2018_027E,CP03_2018_028E,CP03_2018_029E,CP03_2018_030E,CP03_2018_031E,CP03_2018_033E,CP03_2018_034E,CP03_2018_035E,CP03_2018_036E,CP03_2018_037E,CP03_2018_038E,CP03_2018_039E,CP03_2018_040E,CP03_2018_041E,CP03_2018_042E,CP03_2018_043E,CP03_2018_044E,CP03_2018_045E,CP03_2018_092E,CP04_2018_134E,CP04_2018_089E';
     const params = {
         for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
-        key: censusKey
+        key: STORE.censusKey
     }
     const queryString = formatQueryParams(params);
     const url = endPointURL + '?' + variables + '&' + queryString;
@@ -249,15 +251,15 @@ function handleAcsStats(geoid) {
             for (let i = 0; i < responseJson[0].length -1; i++) {
                 i < 5 ? occupations.push( parseFloat(responseJson[1][i]) ) :
                 i < 18 ? industries.push( parseFloat(responseJson[1][i]) ) :
-                i === 18 ? msaData.stats.medianIncome = parseInt( responseJson[1][i] ) :
+                i === 18 ? STORE.msaData.stats.medianIncome = parseInt( responseJson[1][i] ) :
                 medianPriceRent.push( parseInt(responseJson[1][i]) );
             }
             topOccupationTypes(occupations);
             calcPriceToRent(medianPriceRent);
         })
         .catch(error => {
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
+            STORE.map.mymap.setView([37.828, -96.9], 3);
+            STORE.errorPopups.createPopup(STORE.errorPopups.errorMessage).openOn(STORE.map.mymap);
         });
 }
 
@@ -268,7 +270,7 @@ function handleCbpStats(geoid) {
     const predicates = 'EMPSZES=001';
     const params = {
         for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
-        key: censusKey
+        key: STORE.censusKey
     }
     const queryString = formatQueryParams(params);
     const url = endPointURL + '?' + variables + '&' + predicates + '&' + queryString;
@@ -285,8 +287,8 @@ function handleCbpStats(geoid) {
             addStatsToMap();            
         })
         .catch(error => {
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
+            STORE.map.mymap.setView([37.828, -96.9], 3);
+            STORE.errorPopups.createPopup(STORE.errorPopups.errorMessage).openOn(STORE.map.mymap);
         });
 }
 
@@ -297,7 +299,7 @@ function handlePepStats(geoid) {
     const variables = 'get=DATE_CODE,DATE_DESC,POP';
     const params = {
         for: `metropolitan statistical area/micropolitan statistical area:${geoid}`,
-        key: censusKey
+        key: STORE.censusKey
     }
     const queryString = formatQueryParams(params);
     const url = endPointURL + '?' + variables + '&' + queryString;
@@ -313,8 +315,8 @@ function handlePepStats(geoid) {
             calcPopStats(responseJson);
         })
         .catch(error => {
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.errorMessage).openOn(mymap);
+            STORE.map.mymap.setView([37.828, -96.9], 3);
+            STORE.errorPopups.createPopup(STORE.errorPopups.errorMessage).openOn(STORE.map.mymap);
         });
 }
 
@@ -333,13 +335,13 @@ function calcPopStats(popStats) {
     acc + diff.growthOrDecline, 0);
     const averageTotalPopulation = popDiff.reduce ( (acc, diff) => 
     acc + diff.populationTotal, 0) / popDiff.length;
-    msaData.stats.popGrowthDeclineRate = ( (cumulativeGrowthOrDecline / averageTotalPopulation) * 100 ).toFixed(2);
+    STORE.msaData.stats.popGrowthDeclineRate = ( (cumulativeGrowthOrDecline / averageTotalPopulation) * 100 ).toFixed(2);
 }
 
 
 //Calculate and store price-to-rent ratio
 function calcPriceToRent(medianPriceRent) {
-    msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
+    STORE.msaData.stats.priceRentRatio = (medianPriceRent[1] / (medianPriceRent[0] * 12)).toFixed(2);
 }
 
 //Determine and store top 3 occupation types
@@ -355,18 +357,18 @@ function topOccupationTypes(occupations) {
         labeledOccupations[i].population = occupations[i];
     }
     let sortedOccupations = labeledOccupations.sort( (a, b) => b.population - a.population );
-    msaData.stats.topThreeOccupationTypes = [];
+    STORE.msaData.stats.topThreeOccupationTypes = [];
     for (let i = 0; i < 3; i++) {
-        msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
+        STORE.msaData.stats.topThreeOccupationTypes.push(sortedOccupations[i]);
     }
 }
 
 //Determine and store top businesses/employers
 function topBusinesses(businessType) {
     const sortedBusinessTypes = businessType.sort( (a, b) => b[4] - a[4]);
-    msaData.stats.topThreeBusinessTypes = [];
+    STORE.msaData.stats.topThreeBusinessTypes = [];
     for (let i = 2; i < 5; i++) {
-        msaData.stats.topThreeBusinessTypes.push(
+        STORE.msaData.stats.topThreeBusinessTypes.push(
             {
                 businessType: sortedBusinessTypes[i][0],
                 employees: ( ( parseInt(sortedBusinessTypes[i][4]) / parseInt( businessType[1][4] ) )*100).toFixed(2)
@@ -377,34 +379,34 @@ function topBusinesses(businessType) {
 
 function templateStatistics() {
     const statistics = `
-    <h3>${msaData.stats.msaName}</h3>
+    <h3>${STORE.msaData.stats.msaName}</h3>
     <button type="button" class="collapsible">Population growth rate</button>
     <div class="content">
         <p><em>(Higher is better)</em></p>
-        <p>${msaData.stats.popGrowthDeclineRate}%</p>
+        <p>${STORE.msaData.stats.popGrowthDeclineRate}%</p>
     </div>
     <button type="button" class="collapsible">Price-to-rent ratio</button>
     <div class="content">
         <p><em>(Lower is better)</em></p>
-        <p>${msaData.stats.priceRentRatio}</p>
+        <p>${STORE.msaData.stats.priceRentRatio}</p>
     </div>
     <button type="button" class="collapsible">Median income</button>
     <div class="content">
-        <p>$${msaData.stats.medianIncome}</p>
+        <p>$${STORE.msaData.stats.medianIncome}</p>
     </div>
     <button type="button" class="collapsible">Top three sectors</button>
     <div class="content">
         <p><em>(Ordered by percentage of working population employed)</em></p>
-        <p>${msaData.stats.topThreeBusinessTypes[0].businessType}: ${msaData.stats.topThreeBusinessTypes[0].employees}%</p>
-        <p>${msaData.stats.topThreeBusinessTypes[1].businessType}: ${msaData.stats.topThreeBusinessTypes[1].employees}%</p>
-        <p>${msaData.stats.topThreeBusinessTypes[2].businessType}: ${msaData.stats.topThreeBusinessTypes[2].employees}%</p>
+        <p>${STORE.msaData.stats.topThreeBusinessTypes[0].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[0].employees}%</p>
+        <p>${STORE.msaData.stats.topThreeBusinessTypes[1].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[1].employees}%</p>
+        <p>${STORE.msaData.stats.topThreeBusinessTypes[2].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[2].employees}%</p>
     </div>
     <button type="button" class="collapsible">Top three occupation types</button>
     <div class="content">
         <p><em>(Ordered by percentage of working population in occupation)</em></p>
-        <p>${msaData.stats.topThreeOccupationTypes[0].occupation}: ${msaData.stats.topThreeOccupationTypes[0].population}%</p>
-        <p>${msaData.stats.topThreeOccupationTypes[1].occupation}: ${msaData.stats.topThreeOccupationTypes[1].population}%</p>
-        <p>${msaData.stats.topThreeOccupationTypes[2].occupation}: ${msaData.stats.topThreeOccupationTypes[2].population}%</p>
+        <p>${STORE.msaData.stats.topThreeOccupationTypes[0].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[0].population}%</p>
+        <p>${STORE.msaData.stats.topThreeOccupationTypes[1].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[1].population}%</p>
+        <p>${STORE.msaData.stats.topThreeOccupationTypes[2].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[2].population}%</p>
     </div>
     `;
     return statistics;
@@ -427,8 +429,8 @@ function addStatsToMap() {
         maxHeight: maxHeight
     }
 
-    msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();
-    msaData.shape.bindPopup(templateStatistics, popupSize); 
+    STORE.msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();
+    STORE.msaData.shape.bindPopup(templateStatistics, popupSize); 
 }
 
 function addButton() {
