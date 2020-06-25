@@ -51,13 +51,13 @@ function onMapLoad() {
 
     if (window.innerWidth < 700) {
         resetZoom = 3;
-        customMaxZoom = 12;
+        customMaxZoom = 13;
     } else if (window.innerWidth >= 700 && screen.width < 1440) {
         resetZoom = 4;
-        customMaxZoom = 14;
+        customMaxZoom = 17;
     } else if (window.innerWidth >= 1440) {
         resetZoom = 5;
-        customMaxZoom = 16;
+        customMaxZoom = 18;
     }
     STORE.map.mymap.setView([37.828, -96.9], resetZoom);
 
