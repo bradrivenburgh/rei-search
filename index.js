@@ -433,7 +433,7 @@ function addStatsToMap() {
 //Make form collapsible for mobile
 function collapseForm() {
     if (window.innerWidth < 700 ) {
-        $('header').addClass('smallDisplay').attr('role', 'button');
+        $('header').addClass('smallDisplay').attr({'role': 'button', 'tabindex': 0});
         $('header').on('click', function() {
             $('#js-form').toggle('slow');
         });
