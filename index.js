@@ -35,7 +35,7 @@ let mymap = new L.map('mapid', {
     zoomControl: false,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0
-}).on('popupopen', collapsibleContent);
+}).on('popupopen', collapsibleStats);
 
 //Load MapBox tiles and set zoom
 function onMapLoad() {
@@ -84,27 +84,39 @@ function resetApp() {
     });
 }
 
-// Listen for and capture user input
-function handleUserLocation() {
+//Initiate search after user submits the form
+function startSearch() {
     $('#js-form').on('submit', event => {
         event.preventDefault();
-        let zipcode = $('#js-zipcode').val();
-        let city = $('#js-city').val();
-        $('#js-form')[0].reset();
-        introAnimation();
-        hideInstructions();
-
-        if (zipcode.length > 0) {
-            coordinatesLookup(zipcode);
-        } else if (zipcode.length === 0 && city.length > 0) {
-            coordinatesLookup(city);
-        } else {
-            mymap.setView([37.828, -96.9], 3);
-            errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
-
-        }
+        handleUserLocation();
+        transitionSearch();
     });
 }
+
+// Listen for and capture user input
+function handleUserLocation() {
+    let zipcode = $('#js-zipcode').val();
+    let city = $('#js-city').val();
+    $('#js-form')[0].reset();
+
+    if (zipcode.length > 0) {
+        coordinatesLookup(zipcode);
+    } else if (zipcode.length === 0 && city.length > 0) {
+        coordinatesLookup(city);
+    } else {
+        mymap.setView([37.828, -96.9], 3);
+        errorPopups.createPopup(errorPopups.emptyForm).openOn(mymap);
+
+    }
+}
+
+// Get main positioned, remove instructions, and collapse the form
+function transitionSearch() {
+    introAnimation();
+    hideInstructions();
+    $('#js-form').toggle('slow');
+}
+
 //Run intro animations
 function introAnimation() {
     $('main').addClass('moveToTop');
@@ -418,8 +430,19 @@ function addStatsToMap() {
     msaData.shape.bindPopup(templateStatistics, popupSize); 
 }
 
+//Make form collapsible for mobile
+function collapseForm() {
+    if (window.innerWidth < 700 ) {
+        $('header').addClass('smallDisplay').attr('role', 'button');
+        $('header').on('click', function() {
+            $('#js-form').toggle('slow');
+            event.stopPropagation;
+        });
+    }
+}
+
 //Make stats in popup collapsible
-function collapsibleContent() {
+function collapsibleStats() {
     //Create a collection of child elements of class 'collapsible'
     const coll = document.getElementsByClassName('collapsible');
 
@@ -443,8 +466,9 @@ function collapsibleContent() {
 
 function handleSearch() {
     onMapLoad();
-    handleUserLocation();
+    startSearch();
     resetApp();
+    collapseForm();
 }
 
 //Run app

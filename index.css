@@ -97,6 +97,15 @@ header h1 {
     font-size: 2rem;
 }
 
+.smallDisplay {
+    cursor: pointer;
+    padding-bottom: .1rem;
+}
+
+.smallDisplay:hover {
+    color: white;
+}
+
 /* Form */
 
 form {
