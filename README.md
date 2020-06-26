@@ -17,6 +17,7 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 ![Landing screen](images/screenshots/rei-search-landing.png)
 
 ### Responsive mobile-first design
+|Collapsible search form | |
 | --- | --- |
 |![Mobile map with collapsed menu](images/screenshots/rei-search-mobile-map-with-stats.png) | ![Mobile map with expanded menu](images/screenshots/rei-search-mobile-map-expanded-menu.png) |
 
