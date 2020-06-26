@@ -3,6 +3,8 @@
 const STORE = {
     //Census API Key
     censusKey: '411334e38c7e68a6db0c7768a0a69ff590d3706b',
+    //Mapbox API Key
+    accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g',
     
     map: {
         //Boundaries for U.S.
@@ -69,7 +71,7 @@ function onMapLoad() {
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
-        accessToken: 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g'
+        accessToken: STORE.accessToken
     }).addTo(STORE.map.mymap);
 }
 
@@ -139,11 +141,10 @@ function formatQueryParams(params) {
 
 //Retrieve coordinates from MapBox
 function coordinatesLookup(userLocation) {
-    const mapBoxAccessToken = 'pk.eyJ1IjoiYnJpdmVuYnUiLCJhIjoiY2tiNzhqajRmMDNkczJwcmdzNHAwOWdrcCJ9.IjzXWYWjnwGbyqqJ-Rgs2g';
     const endPointURL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${userLocation}.json`;
     const params = {
         limit: 1,
-        access_token: mapBoxAccessToken
+        access_token: STORE.accessToken
     }
     const queryString = formatQueryParams(params);
     const url = endPointURL + '?' + queryString;
