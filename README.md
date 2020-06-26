@@ -9,15 +9,26 @@ This app focuses on discovering details about metropolitan statistical areas (MS
 
 There are 392 (as of 2020) MSAs in the United states, and you can explore key statistical information about each of them with this app.
 
+## Live app
+- [rei-search](https://bradrivenburgh.github.io/rei-search/)
+
 ## Screenshots
 ### Landing screen
 ![Landing screen](images/screenshots/rei-search-landing.png)
+
+### Responsive mobile-first design
+| --- | --- |
+|![Mobile map with collapsed menu](images/screenshots/rei-search-mobile-map-with-stats.png) | ![Mobile map with expanded menu](images/screenshots/rei-search-mobile-map-expanded-menu.png) |
 
 ### Discover and explore MSAs
 ![Close up view of MSA boundary and geography](images/screenshots/rei-search-close-up-map.png)
 
 ### Get key statistics 
 ![Zoomed out view of MSA with statistics showing](images/screenshots/rei-search-map-with-stats.png)
+
+## How to run
+- Clone the repository
+- Open the index.html file in a browser of your choice
 
 ## Technologies used
 - HTML
@@ -29,6 +40,3 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 
 ## Planning
 - [Project board](https://github.com/users/bradrivenburgh/projects/1)
-
-## Live app
-- [rei-search](https://bradrivenburgh.github.io/rei-search/)
