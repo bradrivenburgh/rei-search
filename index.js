@@ -378,39 +378,38 @@ function topBusinesses(businessType) {
     }
 }
 
-function templateStatistics() {
-    const statistics = `
-    <h3>${STORE.msaData.stats.msaName}</h3>
+function templateStatistics(stats, topThreeBusinessTypes, topThreeOccupationTypes, ...otherStats) {
+    return `
+    <h3>${stats.msaName}</h3>
     <button type="button" class="collapsible">Population growth rate</button>
     <div class="content">
         <p><em>(Higher is better)</em></p>
-        <p>${STORE.msaData.stats.popGrowthDeclineRate}%</p>
+        <p>${stats.popGrowthDeclineRate}%</p>
     </div>
     <button type="button" class="collapsible">Price-to-rent ratio</button>
     <div class="content">
         <p><em>(Lower is better)</em></p>
-        <p>${STORE.msaData.stats.priceRentRatio}</p>
+        <p>${stats.priceRentRatio}</p>
     </div>
     <button type="button" class="collapsible">Median income</button>
     <div class="content">
-        <p>$${STORE.msaData.stats.medianIncome}</p>
+        <p>$${stats.medianIncome}</p>
     </div>
     <button type="button" class="collapsible">Top three sectors</button>
     <div class="content">
         <p><em>(Ordered by percentage of working population employed)</em></p>
-        <p>${STORE.msaData.stats.topThreeBusinessTypes[0].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[0].employees}%</p>
-        <p>${STORE.msaData.stats.topThreeBusinessTypes[1].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[1].employees}%</p>
-        <p>${STORE.msaData.stats.topThreeBusinessTypes[2].businessType}: ${STORE.msaData.stats.topThreeBusinessTypes[2].employees}%</p>
+        <p>${topThreeBusinessTypes[0].businessType}: ${topThreeBusinessTypes[0].employees}%</p>
+        <p>${topThreeBusinessTypes[1].businessType}: ${topThreeBusinessTypes[1].employees}%</p>
+        <p>${topThreeBusinessTypes[2].businessType}: ${topThreeBusinessTypes[2].employees}%</p>
     </div>
     <button type="button" class="collapsible">Top three occupation types</button>
     <div class="content">
         <p><em>(Ordered by percentage of working population in occupation)</em></p>
-        <p>${STORE.msaData.stats.topThreeOccupationTypes[0].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[0].population}%</p>
-        <p>${STORE.msaData.stats.topThreeOccupationTypes[1].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[1].population}%</p>
-        <p>${STORE.msaData.stats.topThreeOccupationTypes[2].occupation}: ${STORE.msaData.stats.topThreeOccupationTypes[2].population}%</p>
+        <p>${topThreeOccupationTypes[0].occupation}: ${topThreeOccupationTypes[0].population}%</p>
+        <p>${topThreeOccupationTypes[1].occupation}: ${topThreeOccupationTypes[1].population}%</p>
+        <p>${topThreeOccupationTypes[2].occupation}: ${topThreeOccupationTypes[2].population}%</p>
     </div>
     `;
-    return statistics;
 }
 
 //Add statistics to map vis a leaflet popup
@@ -430,12 +429,14 @@ function addStatsToMap() {
         maxHeight: maxHeight
     }
 
-    STORE.msaData.marker.bindPopup(templateStatistics, popupSize).openPopup();
-    STORE.msaData.shape.bindPopup(templateStatistics, popupSize); 
+    const content = templateStatistics(STORE.msaData.stats, STORE.msaData.stats.topThreeBusinessTypes, STORE.msaData.stats.topThreeOccupationTypes);
+
+    STORE.msaData.marker.bindPopup(content, popupSize).openPopup();
+    STORE.msaData.shape.bindPopup(content, popupSize); 
 }
 
-function addHamburgerButton() {
-    $('header').append(`
+function drawHamburgerButton() {
+    return `
     <button type="button" value="form" name="hamburger">
     <span class="hide">Form</span>
     <svg viewBox="0 0 100 80" width="20" height="20">
@@ -443,7 +444,11 @@ function addHamburgerButton() {
         <rect y="30" width="100" height="20" rx="16"></rect>
         <rect y="60" width="100" height="20" rx="16"></rect>
     </svg>
-  </button>`);
+  </button>`;
+}
+
+function addHamburgerButton() {
+    $('header').append(drawHamburgerButton);
 }
 
 //Make form collapsible for mobile
