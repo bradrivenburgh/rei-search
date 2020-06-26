@@ -17,7 +17,7 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 ![Landing screen](images/screenshots/rei-search-landing.png)
 
 ### Responsive mobile-first design
-|Collapsible search form | |
+|Collapsed form | Expanded form |
 | --- | --- |
 |![Mobile map with collapsed menu](images/screenshots/rei-search-mobile-map-with-stats.png) | ![Mobile map with expanded menu](images/screenshots/rei-search-mobile-map-expanded-menu.png) |
 
@@ -27,10 +27,6 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 ### Get key statistics 
 ![Zoomed out view of MSA with statistics showing](images/screenshots/rei-search-map-with-stats.png)
 
-## How to run
-- Clone the repository
-- Open the index.html file in a browser of your choice
-
 ## Technologies used
 - HTML
 - CSS
@@ -38,6 +34,10 @@ There are 392 (as of 2020) MSAs in the United states, and you can explore key st
 - JQuery
 - LeafletJS
 - CitySDK
+
+## How to run
+- Clone the repository
+- Open the index.html file in a browser of your choice
 
 ## Planning
 - [Project board](https://github.com/users/bradrivenburgh/projects/1)
