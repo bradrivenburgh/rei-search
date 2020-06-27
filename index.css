@@ -248,6 +248,10 @@ main h2 {
     font-size: 15px;
   }
   
+  div.show {
+      display: block;
+  }
+
   .active, .collapsible:hover, .collapsible:focus {
     background-color: #555;
   }

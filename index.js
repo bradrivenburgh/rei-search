@@ -465,24 +465,31 @@ function collapseForm() {
 
 //Make stats in popup collapsible
 function collapsibleStats() {
-    //Create a collection of child elements of class 'collapsible'
+    //Store collections of the 'collapsible" and 'content' classes, respectively
     const coll = document.getElementsByClassName('collapsible');
+    const content = document.getElementsByClassName('content');
 
-    //Loop through coll adding a 'click' event listener that
-    //toggles the 'active' class, establishes the content
-    //to be displayed as the div immediately following
-    //the button, and alternately sets the display of the div to
-    //'block' or 'none' to expand or collapse the content.
     for (let i = 0; i < coll.length; i++) {
-        coll[i].addEventListener('click', function() {
-            this.classList.toggle('active');
-            let content = this.nextElementSibling;
-            if (content.style.display === 'block') {
-            content.style.display = 'none';
-            } else {
-            content.style.display = 'block';
+        coll[i].onclick = function() {
+            //Boolean for whether the 'active' class is present on each button
+            let setClasses = !this.classList.contains('active');
+            //Reset the menu to starting state
+            setClass(coll, 'active', 'remove'); //Remove method removes 'active' class
+            setClass(content, 'show', 'remove'); //Remove method removes 'show' class
+    
+            //If no other button has the 'active' class, toggle 'active' on the clicked button
+            //and 'show' on the the div 
+            if (setClasses) {
+                this.classList.toggle("active");
+                this.nextElementSibling.classList.toggle("show");
             }
-        });
+        }
+    }
+}
+
+function setClass(els, className, fnName) {
+    for (let i = 0; i < els.length; i++) {
+        els[i].classList[fnName](className);
     }
 }
 
