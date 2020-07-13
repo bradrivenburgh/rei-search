@@ -222,10 +222,10 @@ function addMarkerToMap(lat, lng) {
     STORE.msaData.marker = L.marker([lng, lat]).addTo(STORE.map.mymap);
 }
 
-function handleStats(geoid) {
-    handleAcsStats(geoid);
-    handleCbpStats(geoid);
-    handlePepStats(geoid);
+async function handleStats(geoid) {
+    await handleAcsStats(geoid);
+    await handlePepStats(geoid);
+    await handleCbpStats(geoid);
 }
 
 //Retrieve statistics from census acs1 endpoint
