@@ -224,8 +224,8 @@ function addMarkerToMap(lat, lng) {
 
 async function handleStats(geoid) {
     await handleAcsStats(geoid);
-    await handlePepStats(geoid);
-    await handleCbpStats(geoid);
+    handlePepStats(geoid);
+    handleCbpStats(geoid);
 }
 
 //Retrieve statistics from census acs1 endpoint
@@ -430,7 +430,10 @@ function addStatsToMap() {
         maxHeight: maxHeight
     }
 
-    const content = templateStatistics(STORE.msaData.stats, STORE.msaData.stats.topThreeBusinessTypes, STORE.msaData.stats.topThreeOccupationTypes);
+    const content = templateStatistics(
+        STORE.msaData.stats, 
+        STORE.msaData.stats.topThreeBusinessTypes, 
+        STORE.msaData.stats.topThreeOccupationTypes);
 
     STORE.msaData.marker.bindPopup(content, popupSize).openPopup();
     STORE.msaData.shape.bindPopup(content, popupSize); 
