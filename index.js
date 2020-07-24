@@ -224,8 +224,8 @@ function addMarkerToMap(lat, lng) {
 
 async function handleStats(geoid) {
     await handleAcsStats(geoid);
-    handlePepStats(geoid);
-    handleCbpStats(geoid);
+    await handlePepStats(geoid);
+    await handleCbpStats(geoid);
 }
 
 //Retrieve statistics from census acs1 endpoint
